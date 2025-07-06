@@ -7,6 +7,7 @@ import com.example.CampusSync.common.security.JWTService;
 import com.example.CampusSync.department.model.Department;
 import com.example.CampusSync.department.repository.DepartmentRepository;
 import com.example.CampusSync.student.dto.StudentDTO;
+import com.example.CampusSync.student.dto.StudentLoginDTO;
 import com.example.CampusSync.student.entity.Student;
 import com.example.CampusSync.student.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,20 +95,20 @@ public class StudentServiceImpl implements StudentService {
         studentRepository.deleteById(studentId);
     }
 
-    public StudentDTO verify(Student student) {
+    public StudentDTO verify(StudentLoginDTO studentLoginDTO) {
         Authentication authentication = authManager.authenticate(
-                new UsernamePasswordAuthenticationToken(student.getEmail(), student.getPassword())
+                new UsernamePasswordAuthenticationToken(studentLoginDTO.getEmail(), studentLoginDTO.getPassword())
         );
 
         if (!authentication.isAuthenticated()) {
             throw new BadCredentialsException("Invalid Email or password.");
         }
 
-        Student dbStudent = studentRepository.findByEmail(student.getEmail());
+        Student dbStudent = studentRepository.findByEmail(studentLoginDTO.getEmail());
         if (dbStudent == null) {
-            throw new UsernameNotFoundException("Student not found with email: " + student.getEmail());
+            throw new UsernameNotFoundException("Student not found with email: " + studentLoginDTO.getEmail());
         }
-        String jwtToken = jwtService.generateToken(student.getEmail());
+        String jwtToken = jwtService.generateToken(studentLoginDTO.getEmail());
         return new StudentDTO(dbStudent,jwtToken);
     }
 

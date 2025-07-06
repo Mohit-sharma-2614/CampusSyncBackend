@@ -1,11 +1,14 @@
 package com.example.CampusSync.student.controller;
 
+import com.example.CampusSync.common.exceptions.BadCredentialsException;
 import com.example.CampusSync.student.dto.StudentDTO;
+import com.example.CampusSync.student.dto.StudentLoginDTO;
 import com.example.CampusSync.student.entity.Student;
 import com.example.CampusSync.student.service.StudentServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,12 +22,13 @@ public class StudentController {
     StudentServiceImpl studentService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginStudent(@RequestBody Student student){
-        StudentDTO s = studentService.verify(student);
-        if (s != null){
+    public ResponseEntity<?> loginStudent(@RequestBody StudentLoginDTO student){
+        try {
+            StudentDTO s = studentService.verify(student);
             return ResponseEntity.ok(s);
+        } catch (UsernameNotFoundException | BadCredentialsException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/register")

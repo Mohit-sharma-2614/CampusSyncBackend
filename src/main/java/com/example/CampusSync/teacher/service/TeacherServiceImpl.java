@@ -9,6 +9,7 @@ import com.example.CampusSync.department.repository.DepartmentRepository;
 import com.example.CampusSync.student.dto.StudentDTO;
 import com.example.CampusSync.student.entity.Student;
 import com.example.CampusSync.teacher.dto.TeacherDTO;
+import com.example.CampusSync.teacher.dto.TeacherLoginDTO;
 import com.example.CampusSync.teacher.dto.TeacherRegistrationRequest;
 import com.example.CampusSync.teacher.model.Teacher;
 import com.example.CampusSync.teacher.repository.TeacherRepository;
@@ -103,7 +104,7 @@ public class TeacherServiceImpl implements TeacherService{
         teacherRepository.deleteById(teacherId);
     }
 
-    public TeacherDTO verify(Teacher teacher) {
+    public TeacherDTO verify(TeacherLoginDTO teacher) {
         Authentication authentication = authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(teacher.getEmail(), teacher.getPassword())
         );

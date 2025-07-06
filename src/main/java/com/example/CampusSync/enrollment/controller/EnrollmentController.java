@@ -2,6 +2,7 @@ package com.example.CampusSync.enrollment.controller;
 
 
 import com.example.CampusSync.enrollment.dto.EnrollmentDTO;
+import com.example.CampusSync.enrollment.dto.EnrollmentInputDTO;
 import com.example.CampusSync.enrollment.model.Enrollment;
 import com.example.CampusSync.enrollment.service.EnrollmentServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,14 +40,14 @@ public class EnrollmentController {
 
     @PostMapping
     public ResponseEntity<EnrollmentDTO> createEnrollment(
-            @RequestBody Enrollment enrollment) {
+            @RequestBody EnrollmentInputDTO enrollment) {
         EnrollmentDTO created = enrollmentService.createEnrollment(enrollment);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @PutMapping
     public ResponseEntity<EnrollmentDTO> updateEnrollment(
-            @RequestBody Enrollment enrollment) {
+            @RequestBody EnrollmentInputDTO enrollment) {
         try {
             EnrollmentDTO updated = enrollmentService.updateEnrollment(enrollment);
             return ResponseEntity.ok(updated);

@@ -2,6 +2,7 @@ package com.example.CampusSync.teacher.controller;
 
 
 import com.example.CampusSync.teacher.dto.TeacherDTO;
+import com.example.CampusSync.teacher.dto.TeacherLoginDTO;
 import com.example.CampusSync.teacher.dto.TeacherRegistrationRequest;
 import com.example.CampusSync.teacher.model.Teacher;
 import com.example.CampusSync.teacher.service.TeacherServiceImpl;
@@ -41,7 +42,7 @@ public class TeacherController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginTeacher(@RequestBody Teacher teacher) {
+    public ResponseEntity<?> loginTeacher(@RequestBody TeacherLoginDTO teacher) {
         TeacherDTO t = teacherService.verify(teacher);
         return ResponseEntity.ok(t);
     }
