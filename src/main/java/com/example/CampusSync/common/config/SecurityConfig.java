@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(
-                                "/student/login", "/student/register","/department","/teacher/login","/teacher/register"
+                                "/student/login", "/student/register","/department","/teacher/login","/teacher/register","/api/auth/validate-token"
                         ).permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
