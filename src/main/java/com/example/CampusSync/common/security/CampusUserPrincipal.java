@@ -32,7 +32,6 @@ public class CampusUserPrincipal implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // For simplicity, assuming all authenticated users have a "USER" role.
-        // You might want more sophisticated role management based on Student/Teacher type.
         return Collections.singleton(new SimpleGrantedAuthority("USER"));
         // Best practice to prefix roles with "ROLE_" for Spring Security's hasRole() method
     }
@@ -42,7 +41,7 @@ public class CampusUserPrincipal implements UserDetails {
         if (student != null) {
             return student.getPassword();
         } else if (teacher != null) {
-            return teacher.getPassword(); // Assuming Teacher also has a getPassword() method
+            return teacher.getPassword();
         }
         return null; // Or throw an exception if neither is set (shouldn't happen with proper construction)
     }
@@ -50,9 +49,9 @@ public class CampusUserPrincipal implements UserDetails {
     @Override
     public String getUsername() {
         if (student != null) {
-            return student.getEmail(); // Assuming Student has a getEmail() method
+            return student.getEmail();
         } else if (teacher != null) {
-            return teacher.getEmail(); // Assuming Teacher also has a getEmail() method
+            return teacher.getEmail();
         }
         return null; // Or throw an exception
     }
