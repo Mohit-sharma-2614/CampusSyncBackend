@@ -209,6 +209,31 @@ The following are some of the key API endpoints available in the CampusSync back
         "semester": 1
     }
     ```
+### Attendance Token
+* **GET /attendance_token/all**: Retrive all Attendance Token records.
+    ```json
+    {
+        "token": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+        "subject": {
+            "id": 1,
+            "name": "Introduction to Programming",
+            "code": "CS101",
+            "semester": "1",
+            "department": {
+                "id": 1,
+                "name": "Computer Science"
+            },
+            "teacher": {
+                "id": 1,
+                "name": "Dr. Alice Smith",
+                "email": "alice.smith@univ.edu",
+                "departmentName": "Computer Science"
+            }
+        },
+        "generatedAt": "2025-07-11T02:00:00.000+05:30",
+        "expiresAt": "2025-07-11T02:15:00.000+05:30"
+    }
+    ```
 
 ---
 
