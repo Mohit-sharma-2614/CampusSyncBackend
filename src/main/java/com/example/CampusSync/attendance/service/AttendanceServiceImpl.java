@@ -42,6 +42,43 @@ public class AttendanceServiceImpl implements AttendanceService{
     }
 
     @Override
+    public List<AttendanceDTO> getAttendanceBySubjectId(Long subjectId) {
+        // Verify subject exists
+        Subject subject = subjectRepository.findById(subjectId)
+                .orElseThrow(() -> new ResourceNotFoundException("Subject not found with ID: " + subjectId));
+
+        // Fetch and map
+        List<Attendance> attendances = attendanceRepository.findBySubjectId(subjectId);
+        return attendances.stream().map(AttendanceDTO::new).toList();
+    }
+
+    @Override
+    public List<AttendanceDTO> getAttendanceByStudentId(Long studentId) {
+        // Verify student exists
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found with ID: " + studentId));
+
+        // Fetch and map
+        List<Attendance> attendances = attendanceRepository.findByStudentId(studentId);
+        return attendances.stream().map(AttendanceDTO::new).toList();
+    }
+
+    @Override
+    public List<AttendanceDTO> getAttendanceBySubjectAndStudentId(Long subjectId, Long studentId) {
+        // Verify subject and student exist
+        Subject subject = subjectRepository.findById(subjectId)
+                .orElseThrow(() -> new ResourceNotFoundException("Subject not found with ID: " + subjectId));
+
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found with ID: " + studentId));
+
+        // Fetch and map
+        List<Attendance> attendances = attendanceRepository.findBySubjectIdAndStudentId(subjectId, studentId);
+        return attendances.stream().map(AttendanceDTO::new).toList();
+    }
+
+
+    @Override
     public AttendanceDTO getAttendance(Long attendanceId) {
         Attendance a = attendanceRepository.findById(attendanceId)
                 .orElseThrow(() -> new ResolutionException("Attendance not found with ID: "+attendanceId));
@@ -51,9 +88,6 @@ public class AttendanceServiceImpl implements AttendanceService{
     @Transactional
     @Override
     public AttendanceDTO createAttendance(AttendanceInputDTO attendanceDTO) {
-        attendanceDTO.setCreatedAt(LocalDateTime.now());
-        attendanceDTO.setDate(LocalDate.now());
-
         // Validate studentId
         if (attendanceDTO.getStudentId() == null) {
             throw new IllegalArgumentException("Student ID cannot be null");
@@ -72,8 +106,8 @@ public class AttendanceServiceImpl implements AttendanceService{
         Attendance attendance = new Attendance();
         attendance.setStudent(student);
         attendance.setSubject(subject);
-        attendance.setCreatedAt(attendanceDTO.getCreatedAt());
-        attendance.setDate(attendanceDTO.getDate());
+        attendance.setCreatedAt(LocalDateTime.now());
+        attendance.setDate(LocalDate.now());
         attendance.setStatus(attendanceDTO.getStatus());
 
         // Save to database
@@ -111,11 +145,7 @@ public class AttendanceServiceImpl implements AttendanceService{
         // Update fields
         existingAttendance.setStudent(student);
         existingAttendance.setSubject(subject);
-        existingAttendance.setDate(attendanceDTO.getDate() != null ? attendanceDTO.getDate() : LocalDate.now());
         // Preserve createdAt unless explicitly provided
-        if (attendanceDTO.getCreatedAt() != null) {
-            existingAttendance.setCreatedAt(attendanceDTO.getCreatedAt());
-        }
 
         // Save updated entity
         Attendance updatedAttendance = attendanceRepository.saveAndFlush(existingAttendance);

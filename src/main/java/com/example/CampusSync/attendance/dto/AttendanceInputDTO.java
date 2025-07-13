@@ -18,8 +18,6 @@ public class AttendanceInputDTO {
     private Long id;
     private Long studentId;
     private Long subjectId;
-    private LocalDate date;
     private String status;
-    private LocalDateTime createdAt;
 
 }

@@ -25,6 +25,39 @@ public class AttendanceController {
         return ResponseEntity.ok(all);
     }
 
+    @GetMapping("/subject/{subjectId}")
+    public ResponseEntity<List<AttendanceDTO>> getBySubject(@PathVariable Long subjectId) {
+
+        try{
+            List<AttendanceDTO> attendance = attendanceService.getAttendanceBySubjectId(subjectId);
+            return ResponseEntity.ok(attendance);
+        } catch (NoSuchElementException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    @GetMapping("/student/{studentId}")
+    public ResponseEntity<List<AttendanceDTO>> getByStudent(@PathVariable Long studentId) {
+        try{
+            List<AttendanceDTO> attendance = attendanceService.getAttendanceByStudentId(studentId);
+            return ResponseEntity.ok(attendance);
+        } catch (NoSuchElementException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    @GetMapping("/subject/{subjectId}/student/{studentId}")
+    public ResponseEntity<List<AttendanceDTO>> getBySubjectAndStudent(
+            @PathVariable Long subjectId,
+            @PathVariable Long studentId) {
+        try{
+            List<AttendanceDTO> attendance = attendanceService.getAttendanceBySubjectAndStudentId(subjectId,studentId);
+            return ResponseEntity.ok(attendance);
+        } catch (NoSuchElementException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
     @GetMapping
     public ResponseEntity<AttendanceDTO> getAttendanceById(
             @RequestParam("attendanceId") String attendanceId) {

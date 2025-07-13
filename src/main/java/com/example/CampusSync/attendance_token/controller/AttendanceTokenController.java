@@ -2,6 +2,7 @@ package com.example.CampusSync.attendance_token.controller;
 
 
 import com.example.CampusSync.attendance_token.dto.AttendanceTokenDTO;
+import com.example.CampusSync.attendance_token.dto.AttendanceTokenInputDTO;
 import com.example.CampusSync.attendance_token.model.AttendanceToken;
 import com.example.CampusSync.attendance_token.service.AttendanceTokenServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ public class AttendanceTokenController {
     }
 
     @PostMapping
-    public ResponseEntity<AttendanceTokenDTO> createToken(@RequestBody AttendanceToken attendanceToken) {
+    public ResponseEntity<AttendanceTokenDTO> createToken(@RequestBody AttendanceTokenInputDTO attendanceToken) {
         AttendanceTokenDTO createdToken = attendanceTokensService.createToken(attendanceToken);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdToken); // 201 Created
     }

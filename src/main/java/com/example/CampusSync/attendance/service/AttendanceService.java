@@ -12,4 +12,9 @@ public interface AttendanceService {
     AttendanceDTO createAttendance(AttendanceInputDTO attendance);
     AttendanceDTO updateAttendance(AttendanceInputDTO attendance);
     void deleteAttendance(Long attendanceId);
+    List<AttendanceDTO> getAttendanceBySubjectId(Long subjectId);
+
+    List<AttendanceDTO> getAttendanceByStudentId(Long studentId);
+
+    List<AttendanceDTO> getAttendanceBySubjectAndStudentId(Long subjectId, Long studentId);
 }
