@@ -27,6 +27,40 @@ public class EnrollmentController {
         return ResponseEntity.ok(enrollments);
     }
 
+    @GetMapping("/student")
+    public ResponseEntity<List<EnrollmentDTO>> getEnrollmentsByStudentId(
+            @RequestParam("studentId") Long studentId) {
+        try {
+            List<EnrollmentDTO> enrollments = enrollmentService.findByStudentId(studentId);
+            return ResponseEntity.ok(enrollments);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    @GetMapping("/subject")
+    public ResponseEntity<List<EnrollmentDTO>> getEnrollmentsBySubjectId(
+            @RequestParam("subjectId") Long subjectId) {
+        try {
+            List<EnrollmentDTO> enrollments = enrollmentService.findBySubjectId(subjectId);
+            return ResponseEntity.ok(enrollments);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    @GetMapping("/student-subject")
+    public ResponseEntity<List<EnrollmentDTO>> getEnrollmentsByStudentIdAndSubjectId(
+            @RequestParam("studentId") Long studentId,
+            @RequestParam("subjectId") Long subjectId) {
+        try {
+            List<EnrollmentDTO> enrollments = enrollmentService.findByStudentIdAndSubjectId(studentId, subjectId);
+            return ResponseEntity.ok(enrollments);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
     @GetMapping
     public ResponseEntity<EnrollmentDTO> getEnrollmentById(
             @RequestParam("enrollmentId") String enrollmentId) {
