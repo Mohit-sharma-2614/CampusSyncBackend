@@ -17,4 +17,7 @@ public interface AttendanceService {
     List<AttendanceDTO> getAttendanceByStudentId(Long studentId);
 
     List<AttendanceDTO> getAttendanceBySubjectAndStudentId(Long subjectId, Long studentId);
+
+    List<AttendanceDTO> createBulkAttendance(List<AttendanceInputDTO> attendanceInputs);
+    List<AttendanceDTO> getAttendanceBySubjectAndDate(Long subjectId, String date);
 }

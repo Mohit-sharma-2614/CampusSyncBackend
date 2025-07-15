@@ -17,7 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.lang.module.ResolutionException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @ComponentScan
@@ -113,6 +116,64 @@ public class AttendanceServiceImpl implements AttendanceService{
         // Save to database
         Attendance savedAttendance = attendanceRepository.save(attendance);
         return new AttendanceDTO(savedAttendance);
+    }
+
+    @Override
+    @Transactional
+    public List<AttendanceDTO> createBulkAttendance(List<AttendanceInputDTO> attendanceInputs) {
+        if (attendanceInputs == null || attendanceInputs.isEmpty()) {
+            throw new IllegalArgumentException("Attendance input list cannot be null or empty");
+        }
+
+        List<Attendance> attendances = attendanceInputs.stream().map(input -> {
+            // Validate student
+            Student student = studentRepository.findById(input.getStudentId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Student not found with id: " + input.getStudentId()));
+
+            // Validate subject
+            Subject subject = subjectRepository.findById(input.getSubjectId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Subject not found with id: " + input.getSubjectId()));
+
+            // Validate status
+            if (input.getStatus() == null || !List.of("PRESENT", "ABSENT").contains(input.getStatus().toUpperCase())) {
+                throw new IllegalArgumentException("Invalid status: " + input.getStatus());
+            }
+
+            // Create Attendance entity
+            Attendance attendance = new Attendance();
+            attendance.setStudent(student);
+            attendance.setSubject(subject);
+            attendance.setDate(LocalDate.now()); // Default to today; adjust if input includes date
+            attendance.setStatus(input.getStatus().toUpperCase());
+
+            return attendance;
+        }).collect(Collectors.toList());
+
+        // Save all attendance records
+        List<Attendance> savedAttendances = attendanceRepository.saveAll(attendances);
+        return savedAttendances.stream()
+                .map(AttendanceDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<AttendanceDTO> getAttendanceBySubjectAndDate(Long subjectId, String date) {
+        try {
+            LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ISO_LOCAL_DATE);
+
+            // Validate subject
+            subjectRepository.findById(subjectId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Subject not found with id: " + subjectId));
+
+            List<Attendance> attendances = attendanceRepository.findBySubjectIdAndDate(subjectId, localDate)
+                    .orElseThrow(() -> new ResourceNotFoundException("No attendance records found for subjectId: " + subjectId + " on date: " + date));
+
+            return attendances.stream()
+                    .map(AttendanceDTO::new)
+                    .collect(Collectors.toList());
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Invalid date format: " + date, e);
+        }
     }
 
     @Transactional

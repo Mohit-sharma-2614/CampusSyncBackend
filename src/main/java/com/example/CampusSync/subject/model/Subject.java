@@ -30,6 +30,7 @@ public class Subject {
     private String code;
 
     private String semester;
+//    private String totalClasses;
 
     @ManyToOne
     @JoinColumn(name = "department_id", nullable = false)

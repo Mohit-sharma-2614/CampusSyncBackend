@@ -9,7 +9,9 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @ComponentScan
@@ -22,4 +24,7 @@ public interface AttendanceRepository extends JpaRepository<Attendance,Long> {
 
     @Query("SELECT a FROM Attendance a WHERE a.subject.id = :subjectId AND a.student.id = :studentId")
     List<Attendance> findBySubjectIdAndStudentId(@Param("subjectId") Long subjectId, @Param("studentId") Long studentId);
+
+    @Query("SELECT a FROM Attendance a WHERE a.subject.id = :subjectId AND a.date = :date")
+    Optional<List<Attendance>> findBySubjectIdAndDate(@Param("subjectId") Long subjectId, @Param("date") LocalDate date);
 }
