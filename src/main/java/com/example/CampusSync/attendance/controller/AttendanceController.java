@@ -4,6 +4,7 @@ import com.example.CampusSync.attendance.dto.AttendanceDTO;
 import com.example.CampusSync.attendance.dto.AttendanceInputDTO;
 import com.example.CampusSync.attendance.model.Attendance;
 import com.example.CampusSync.attendance.service.AttendanceServiceImpl;
+import com.example.CampusSync.common.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +44,34 @@ public class AttendanceController {
             return ResponseEntity.ok(attendance);
         } catch (NoSuchElementException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    @PostMapping("/bulk")
+    public ResponseEntity<List<AttendanceDTO>> createBulkAttendance(@RequestBody List<AttendanceInputDTO> attendanceInputs) {
+        try {
+            List<AttendanceDTO> createdAttendances = attendanceService.createBulkAttendance(attendanceInputs);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdAttendances);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @GetMapping("/subject-date")
+    public ResponseEntity<List<AttendanceDTO>> getAttendanceBySubjectAndDate(
+            @RequestParam("subjectId") Long subjectId,
+            @RequestParam("date") String date) {
+        try {
+            List<AttendanceDTO> attendances = attendanceService.getAttendanceBySubjectAndDate(subjectId, date);
+            return ResponseEntity.ok(attendances);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
