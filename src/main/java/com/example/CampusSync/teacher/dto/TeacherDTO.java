@@ -1,12 +1,11 @@
 package com.example.CampusSync.teacher.dto;
 
-import com.example.CampusSync.student.entity.Student;
 import com.example.CampusSync.teacher.model.Teacher;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
+
 import lombok.AllArgsConstructor;
-import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter // Lombok annotation for getters
 @Setter // Lombok annotation for setters (useful if you accept TeacherDTO in requests)

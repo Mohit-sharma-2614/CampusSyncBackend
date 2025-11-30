@@ -1,16 +1,22 @@
 package com.example.CampusSync.attendance_token.model;
 
+import java.sql.Timestamp;
+import java.util.UUID;
+
 import com.example.CampusSync.subject.model.Subject;
 import com.example.CampusSync.teacher.model.Teacher;
-import jakarta.persistence.*;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import org.hibernate.annotations.CreationTimestamp;
-
-import java.sql.Timestamp;
-import java.util.UUID;
 
 @Entity
 @Table(name = "attendance_tokens")

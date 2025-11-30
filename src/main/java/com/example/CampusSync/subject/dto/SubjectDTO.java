@@ -1,9 +1,9 @@
 package com.example.CampusSync.subject.dto;
 
 import com.example.CampusSync.department.dto.DepartmentDTO;
-import com.example.CampusSync.student.entity.Student;
 import com.example.CampusSync.subject.model.Subject;
 import com.example.CampusSync.teacher.dto.TeacherDTO;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

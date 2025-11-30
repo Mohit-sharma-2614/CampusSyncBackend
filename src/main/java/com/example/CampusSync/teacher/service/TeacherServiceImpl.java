@@ -1,19 +1,8 @@
 package com.example.CampusSync.teacher.service;
 
-import com.example.CampusSync.common.exceptions.BadCredentialsException;
-import com.example.CampusSync.common.exceptions.ResourceAlreadyExistException;
-import com.example.CampusSync.common.exceptions.ResourceNotFoundException;
-import com.example.CampusSync.common.security.JWTService;
-import com.example.CampusSync.department.model.Department;
-import com.example.CampusSync.department.repository.DepartmentRepository;
-import com.example.CampusSync.student.dto.StudentDTO;
-import com.example.CampusSync.student.entity.Student;
-import com.example.CampusSync.teacher.dto.TeacherDTO;
-import com.example.CampusSync.teacher.dto.TeacherLoginDTO;
-import com.example.CampusSync.teacher.dto.TeacherRegistrationRequest;
-import com.example.CampusSync.teacher.model.Teacher;
-import com.example.CampusSync.teacher.repository.TeacherRepository;
-import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,8 +12,18 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import com.example.CampusSync.common.exceptions.BadCredentialsException;
+import com.example.CampusSync.common.exceptions.ResourceNotFoundException;
+import com.example.CampusSync.common.security.JWTService;
+import com.example.CampusSync.department.model.Department;
+import com.example.CampusSync.department.repository.DepartmentRepository;
+import com.example.CampusSync.teacher.dto.TeacherDTO;
+import com.example.CampusSync.teacher.dto.TeacherLoginDTO;
+import com.example.CampusSync.teacher.dto.TeacherRegistrationRequest;
+import com.example.CampusSync.teacher.model.Teacher;
+import com.example.CampusSync.teacher.repository.TeacherRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 @ComponentScan

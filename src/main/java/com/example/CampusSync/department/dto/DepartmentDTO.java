@@ -1,6 +1,7 @@
 package com.example.CampusSync.department.dto;
 
 import com.example.CampusSync.department.model.Department;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

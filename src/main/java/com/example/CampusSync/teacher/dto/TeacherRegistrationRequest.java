@@ -1,11 +1,9 @@
 package com.example.CampusSync.teacher.dto;
 
-// src/main/java/com/example/CampusSync/teacher/dto/TeacherRegistrationRequest.java
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter

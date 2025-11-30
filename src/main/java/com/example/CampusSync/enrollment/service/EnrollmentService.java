@@ -1,10 +1,9 @@
 package com.example.CampusSync.enrollment.service;
 
+import java.util.List;
+
 import com.example.CampusSync.enrollment.dto.EnrollmentDTO;
 import com.example.CampusSync.enrollment.dto.EnrollmentInputDTO;
-import com.example.CampusSync.enrollment.model.Enrollment;
-
-import java.util.List;
 
 public interface EnrollmentService{
     List<EnrollmentDTO> getAllEnrollment();

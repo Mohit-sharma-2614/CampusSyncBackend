@@ -67,6 +67,39 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<!-- Web & WebSocket -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-websocket</artifactId>
+    </dependency>
+    <!-- Reactor Netty (Required for Relay) -->
+    <dependency>
+        <groupId>io.projectreactor.netty</groupId>
+        <artifactId>reactor-netty</artifactId>
+    </dependency>
+
+	<dependency>
+    <groupId>com.google.firebase</groupId>
+    <artifactId>firebase-admin</artifactId>
+    <version>9.2.0</version>
+</dependency>
+    
+    <!-- Data Persistence (For offline history) -->
+    <!-- <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency> -->
+    <dependency>
+        <groupId>com.mysql</groupId>
+        <artifactId>mysql-connector-j</artifactId>
+    </dependency>
+    
+    <!-- JSON Processing -->
+    <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+    </dependency>
+
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>

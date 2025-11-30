@@ -1,9 +1,9 @@
 package com.example.CampusSync.subject.service;
 
+import java.util.List;
+
 import com.example.CampusSync.subject.dto.SubjectDTO;
 import com.example.CampusSync.subject.model.Subject;
-
-import java.util.List;
 
 public interface SubjectService {
     List<SubjectDTO> getAllSubjects();

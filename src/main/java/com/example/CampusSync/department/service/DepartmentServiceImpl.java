@@ -1,14 +1,14 @@
 package com.example.CampusSync.department.service;
 
-import com.example.CampusSync.department.dto.DepartmentDTO;
-import com.example.CampusSync.department.model.Department;
-import com.example.CampusSync.department.repository.DepartmentRepository;
-import com.example.CampusSync.common.exceptions.ResourceAlreadyExistException;
-import com.example.CampusSync.common.exceptions.ResourceNotFoundException;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.example.CampusSync.common.exceptions.ResourceNotFoundException;
+import com.example.CampusSync.department.dto.DepartmentDTO;
+import com.example.CampusSync.department.model.Department;
+import com.example.CampusSync.department.repository.DepartmentRepository;
 
 @Service
 public class DepartmentServiceImpl implements DepartmentService{

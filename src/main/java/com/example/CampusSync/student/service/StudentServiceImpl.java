@@ -1,7 +1,17 @@
 package com.example.CampusSync.student.service;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.example.CampusSync.common.exceptions.BadCredentialsException;
-import com.example.CampusSync.common.exceptions.ResourceAlreadyExistException;
 import com.example.CampusSync.common.exceptions.ResourceNotFoundException;
 import com.example.CampusSync.common.security.JWTService;
 import com.example.CampusSync.department.model.Department;
@@ -10,20 +20,6 @@ import com.example.CampusSync.student.dto.StudentDTO;
 import com.example.CampusSync.student.dto.StudentLoginDTO;
 import com.example.CampusSync.student.entity.Student;
 import com.example.CampusSync.student.repository.StudentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @ComponentScan
 @Service

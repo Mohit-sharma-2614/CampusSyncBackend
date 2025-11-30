@@ -1,10 +1,9 @@
 package com.example.CampusSync.attendance.service;
 
+import java.util.List;
+
 import com.example.CampusSync.attendance.dto.AttendanceDTO;
 import com.example.CampusSync.attendance.dto.AttendanceInputDTO;
-import com.example.CampusSync.attendance.model.Attendance;
-
-import java.util.List;
 
 public interface AttendanceService {
     List<AttendanceDTO> getAllAttendance();

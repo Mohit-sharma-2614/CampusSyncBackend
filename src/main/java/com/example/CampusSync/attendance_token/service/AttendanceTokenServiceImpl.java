@@ -1,25 +1,23 @@
 package com.example.CampusSync.attendance_token.service;
 
-import com.example.CampusSync.attendance.model.Attendance;
+import java.sql.Timestamp;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.example.CampusSync.attendance_token.dto.AttendanceTokenDTO;
 import com.example.CampusSync.attendance_token.dto.AttendanceTokenInputDTO;
 import com.example.CampusSync.attendance_token.model.AttendanceToken;
 import com.example.CampusSync.attendance_token.repository.AttendanceTokenRepository;
 import com.example.CampusSync.common.exceptions.ResourceNotFoundException;
-import com.example.CampusSync.student.entity.Student;
 import com.example.CampusSync.subject.model.Subject;
 import com.example.CampusSync.subject.repository.SubjectRepository;
 import com.example.CampusSync.teacher.model.Teacher;
 import com.example.CampusSync.teacher.repository.TeacherRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.sql.Timestamp;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class AttendanceTokenServiceImpl implements AttendanceTokenService {
@@ -33,7 +31,7 @@ public class AttendanceTokenServiceImpl implements AttendanceTokenService {
     @Autowired
     private TeacherRepository teacherRepository;
 
-    private static final int TOKEN_VALIDITY_MINUTES = 10; // Token valid for 10 minutes
+    private static final int TOKEN_VALIDITY_MINUTES = 1; // Token valid for 10 minutes
 
     @Override
     public List<AttendanceTokenDTO> getAllTokens() {

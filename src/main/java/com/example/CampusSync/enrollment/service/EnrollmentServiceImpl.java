@@ -1,24 +1,22 @@
 package com.example.CampusSync.enrollment.service;
 
-import com.example.CampusSync.enrollment.dto.EnrollmentDTO;
-import com.example.CampusSync.enrollment.dto.EnrollmentInputDTO;
-import com.example.CampusSync.enrollment.model.Enrollment;
-import com.example.CampusSync.enrollment.repository.EnrollmentRepository;
-import com.example.CampusSync.common.exceptions.ResourceAlreadyExistException;
-import com.example.CampusSync.common.exceptions.ResourceNotFoundException;
-import com.example.CampusSync.student.entity.Student;
-import com.example.CampusSync.student.repository.StudentRepository;
-import com.example.CampusSync.subject.model.Subject;
-import com.example.CampusSync.subject.repository.SubjectRepository;
-import com.example.CampusSync.teacher.dto.TeacherDTO;
-import com.example.CampusSync.teacher.model.Teacher;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import com.example.CampusSync.common.exceptions.ResourceNotFoundException;
+import com.example.CampusSync.enrollment.dto.EnrollmentDTO;
+import com.example.CampusSync.enrollment.dto.EnrollmentInputDTO;
+import com.example.CampusSync.enrollment.model.Enrollment;
+import com.example.CampusSync.enrollment.repository.EnrollmentRepository;
+import com.example.CampusSync.student.entity.Student;
+import com.example.CampusSync.student.repository.StudentRepository;
+import com.example.CampusSync.subject.model.Subject;
+import com.example.CampusSync.subject.repository.SubjectRepository;
 
 @ComponentScan
 @Service

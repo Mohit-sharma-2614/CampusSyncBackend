@@ -1,9 +1,9 @@
 package com.example.CampusSync.department.service;
 
+import java.util.List;
+
 import com.example.CampusSync.department.dto.DepartmentDTO;
 import com.example.CampusSync.department.model.Department;
-
-import java.util.List;
 
 public interface DepartmentService {
     List<DepartmentDTO> getAll();

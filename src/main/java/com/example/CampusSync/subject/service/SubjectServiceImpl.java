@@ -1,6 +1,12 @@
 package com.example.CampusSync.subject.service;
 
-import com.example.CampusSync.common.exceptions.ResourceAlreadyExistException;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Service;
+
 import com.example.CampusSync.common.exceptions.ResourceNotFoundException;
 import com.example.CampusSync.department.model.Department;
 import com.example.CampusSync.department.repository.DepartmentRepository;
@@ -9,12 +15,6 @@ import com.example.CampusSync.subject.model.Subject;
 import com.example.CampusSync.subject.repository.SubjectRepository;
 import com.example.CampusSync.teacher.model.Teacher;
 import com.example.CampusSync.teacher.repository.TeacherRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @ComponentScan

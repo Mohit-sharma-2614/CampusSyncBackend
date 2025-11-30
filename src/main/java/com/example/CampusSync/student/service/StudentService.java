@@ -1,9 +1,9 @@
 package com.example.CampusSync.student.service;
 
+import java.util.List;
+
 import com.example.CampusSync.student.dto.StudentDTO;
 import com.example.CampusSync.student.entity.Student;
-
-import java.util.List;
 
 public interface StudentService {
     List<StudentDTO> getAllStudents();

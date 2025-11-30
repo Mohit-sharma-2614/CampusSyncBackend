@@ -1,5 +1,18 @@
 package com.example.CampusSync.attendance.service;
 
+import java.lang.module.ResolutionException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.example.CampusSync.attendance.dto.AttendanceDTO;
 import com.example.CampusSync.attendance.dto.AttendanceInputDTO;
 import com.example.CampusSync.attendance.model.Attendance;
@@ -9,18 +22,6 @@ import com.example.CampusSync.student.entity.Student;
 import com.example.CampusSync.student.repository.StudentRepository;
 import com.example.CampusSync.subject.model.Subject;
 import com.example.CampusSync.subject.repository.SubjectRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.lang.module.ResolutionException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 @ComponentScan
