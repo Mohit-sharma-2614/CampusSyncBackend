@@ -10,6 +10,8 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
+import com.example.CampusSync.attendance.model.AttendanceStatus;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
@@ -20,7 +22,7 @@ public class AttendanceDTO {
     private StudentDTO student;
     private SubjectDTO subject;
     private LocalDate date;
-    private String status;
+    private AttendanceStatus status;
 
     public AttendanceDTO(Attendance attendance){
         this.id = attendance.getId();

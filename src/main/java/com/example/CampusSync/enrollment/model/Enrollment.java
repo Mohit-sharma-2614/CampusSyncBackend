@@ -2,6 +2,8 @@ package com.example.CampusSync.enrollment.model;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import com.example.CampusSync.student.entity.Student;
 import com.example.CampusSync.subject.model.Subject;
 
@@ -35,6 +37,7 @@ public class Enrollment {
     @JoinColumn(name = "subject_id", nullable = false)
     private Subject subject;
 
+    @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 }

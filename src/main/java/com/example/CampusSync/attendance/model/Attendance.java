@@ -4,11 +4,15 @@ package com.example.CampusSync.attendance.model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import com.example.CampusSync.student.entity.Student;
 import com.example.CampusSync.subject.model.Subject;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -39,8 +43,10 @@ public class Attendance {
 
     private LocalDate date;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private AttendanceStatus status;
 
+    @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 }

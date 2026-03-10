@@ -15,8 +15,6 @@ import org.springframework.stereotype.Service;
 import com.example.CampusSync.common.exceptions.BadCredentialsException;
 import com.example.CampusSync.common.exceptions.ResourceNotFoundException;
 import com.example.CampusSync.common.security.JWTService;
-import com.example.CampusSync.department.model.Department;
-import com.example.CampusSync.department.repository.DepartmentRepository;
 import com.example.CampusSync.teacher.dto.TeacherDTO;
 import com.example.CampusSync.teacher.dto.TeacherLoginDTO;
 import com.example.CampusSync.teacher.dto.TeacherRegistrationRequest;
@@ -33,9 +31,6 @@ public class TeacherServiceImpl implements TeacherService{
 
     @Autowired
     AuthenticationManager authManager;
-
-    @Autowired
-    DepartmentRepository departmentRepository;
 
     @Autowired
     PasswordEncoder encoder;
@@ -74,16 +69,11 @@ public class TeacherServiceImpl implements TeacherService{
 
     @Transactional // Ensure this method is transactional for fetching and saving
     public TeacherDTO createTeacher(TeacherRegistrationRequest request) {
-        // 1. Fetch the Department entity using the provided departmentId
-        Department department = departmentRepository.findById(request.getDepartmentId())
-                .orElseThrow(() -> new IllegalArgumentException("Department not found with ID: " + request.getDepartmentId()));
-
         // 2. Create the Teacher entity
         Teacher teacher = new Teacher();
         teacher.setName(request.getName());
         teacher.setEmail(request.getEmail());
         teacher.setPassword(encoder.encode(request.getPassword())); // Hash the password!
-        teacher.setDepartment(department); // <-- Set the fetched Department object
 
         // If you're not using @CreationTimestamp, set it here:
         teacher.setCreatedAt(LocalDateTime.now());

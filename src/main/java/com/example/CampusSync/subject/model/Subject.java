@@ -29,10 +29,9 @@ public class Subject {
 
     private String name;
 
-    @Column(unique = true, nullable = false)
     private String code;
 
-    private String semester;
+    private int semester;
 //    private String totalClasses;
 
     @ManyToOne

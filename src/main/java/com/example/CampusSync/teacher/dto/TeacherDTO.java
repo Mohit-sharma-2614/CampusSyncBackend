@@ -19,15 +19,12 @@ public class TeacherDTO {
     @Setter
     private String jwtToken;
     // Do NOT include 'password' for security reasons in a DTO returned to the client
-    private String departmentName; // Just the department name, not the whole Department object
 
     // Constructor to convert from Teacher entity to TeacherDTO
     public TeacherDTO(Teacher teacher) {
         this.id = teacher.getId();
         this.name = teacher.getName();
         this.email = teacher.getEmail();
-        // Null check for department in case it's optional or not loaded
-        this.departmentName = (teacher.getDepartment() != null) ? teacher.getDepartment().getName() : null;
     }
     public TeacherDTO(Teacher teacher, String jwtToken) {
         this(teacher);

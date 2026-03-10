@@ -19,7 +19,7 @@ public class SubjectDTO {
     private Long id;
     private String name;
     private String code;
-    private String semester;
+    private int semester;
     private DepartmentDTO department;
     private TeacherDTO teacher;
 

@@ -136,7 +136,7 @@ public class AttendanceServiceImpl implements AttendanceService{
                     .orElseThrow(() -> new ResourceNotFoundException("Subject not found with id: " + input.getSubjectId()));
 
             // Validate status
-            if (input.getStatus() == null || !List.of("PRESENT", "ABSENT").contains(input.getStatus().toUpperCase())) {
+            if (input.getStatus() == null) {
                 throw new IllegalArgumentException("Invalid status: " + input.getStatus());
             }
 
@@ -145,7 +145,7 @@ public class AttendanceServiceImpl implements AttendanceService{
             attendance.setStudent(student);
             attendance.setSubject(subject);
             attendance.setDate(LocalDate.now()); // Default to today; adjust if input includes date
-            attendance.setStatus(input.getStatus().toUpperCase());
+            attendance.setStatus(input.getStatus());
 
             return attendance;
         }).collect(Collectors.toList());

@@ -2,6 +2,8 @@ package com.example.CampusSync.student.entity;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import com.example.CampusSync.department.model.Department;
 
 import jakarta.persistence.Column;
@@ -29,7 +31,7 @@ public class Student {
     private String name;
 
     @Column(name = "student_uid", unique = true, nullable = false)
-    private String student_uid;
+    private String studentUid;
 
     @Column(unique = true, nullable = false)
     private String email;
@@ -42,5 +44,7 @@ public class Student {
     @JoinColumn(name = "department_id")
     private Department department;
 
-    private LocalDateTime created_at;
+    @CreationTimestamp
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 }

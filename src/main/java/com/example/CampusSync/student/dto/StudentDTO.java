@@ -9,7 +9,7 @@ import lombok.Setter;
 public class StudentDTO {
     private Long id;
     private String name;
-    private String student_uid;
+    private String studentUid;
     private String email;
     // Setter for jwt_token (optional, if you prefer setting it separately)
     @Setter
@@ -21,7 +21,7 @@ public class StudentDTO {
     public StudentDTO(Student student) {
         this.id = student.getId();
         this.name = student.getName();
-        this.student_uid = student.getStudent_uid();
+        this.studentUid = student.getStudentUid();
         this.email = student.getEmail();
         this.semester = student.getSemester();
     }
