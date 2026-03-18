@@ -3,7 +3,11 @@ package com.example.CampusSync.attendance.model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
+import com.example.CampusSync.attendance_token.model.AttendanceToken;
+import com.example.CampusSync.enrollment.model.Enrollment;
+import com.example.CampusSync.lecturesessions.model.LectureSessions;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.example.CampusSync.student.entity.Student;
@@ -23,6 +27,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
+enum Status{
+    ABSENT,
+    PRESENT
+}
+
 @Entity
 @Table(name = "attendance")
 @Data
@@ -34,14 +44,16 @@ public class Attendance {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "student_id", nullable = false)
-    private Student student;
+    @JoinColumn(name = "enrollment_id", nullable = false)
+    private Enrollment enrollment;
 
     @ManyToOne
-    @JoinColumn(name = "subject_id", nullable = false)
-    private Subject subject;
+    @JoinColumn(name = "lecture_session_id", nullable = false)
+    private LectureSessions lectureSessions;
 
-    private LocalDate date;
+    @ManyToOne
+    @JoinColumn(name = "token_id", nullable = false)
+    private AttendanceToken toke;
 
     @Enumerated(EnumType.STRING)
     private AttendanceStatus status;

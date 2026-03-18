@@ -2,6 +2,7 @@ package com.example.CampusSync.enrollment.model;
 
 import java.time.LocalDateTime;
 
+import com.example.CampusSync.courseofferings.model.CourseOfferings;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.example.CampusSync.student.entity.Student;
@@ -34,8 +35,8 @@ public class Enrollment {
     private Student student;
 
     @ManyToOne
-    @JoinColumn(name = "subject_id", nullable = false)
-    private Subject subject;
+    @JoinColumn(name = "course_offering_id", nullable = false)
+    private CourseOfferings courseOfferings;
 
     @CreationTimestamp
     @Column(name = "created_at")

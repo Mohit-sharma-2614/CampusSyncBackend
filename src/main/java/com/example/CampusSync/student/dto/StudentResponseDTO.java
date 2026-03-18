@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class StudentDTO {
+public class StudentResponseDTO {
     private Long id;
     private String name;
     private String email;
@@ -19,10 +19,10 @@ public class StudentDTO {
     private String jwtToken;
     private String refreshToken;
 
-    public StudentDTO() {}
+    public StudentResponseDTO() {}
 
     // Constructor to convert Student entity to DTO
-    public StudentDTO(Student student) {
+    public StudentResponseDTO(Student student) {
         this.id = student.getId();
         if (student.getUser() != null) {
             this.name = student.getUser().getName();
@@ -35,7 +35,7 @@ public class StudentDTO {
         this.section = student.getSection();
     }
     
-    public StudentDTO(Student student, String jwtToken, String refreshToken) {
+    public StudentResponseDTO(Student student, String jwtToken, String refreshToken) {
         this(student);
         this.jwtToken = jwtToken;
         this.refreshToken = refreshToken;

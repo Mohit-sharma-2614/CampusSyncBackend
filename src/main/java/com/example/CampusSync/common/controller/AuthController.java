@@ -1,14 +1,15 @@
 package com.example.CampusSync.common.controller;
 
+import com.example.CampusSync.common.model.TokenRefreshRequest;
+import com.example.CampusSync.common.model.TokenRefreshResponse;
+import com.example.CampusSync.refreshtoken.model.RefreshTokens;
+import com.example.CampusSync.refreshtoken.service.RefreshTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.CampusSync.common.model.AuthModel;
 import com.example.CampusSync.common.security.JWTService;
@@ -19,11 +20,13 @@ public class AuthController {
 
     private final JWTService jwtService;
     private final UserDetailsService userDetailsService;
+    private final RefreshTokenService refreshTokenService;
 
     @Autowired
-    public AuthController(JWTService jwtService, UserDetailsService userDetailsService) {
+    public AuthController(JWTService jwtService, UserDetailsService userDetailsService, RefreshTokenService refreshTokenService) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
+        this.refreshTokenService = refreshTokenService;
     }
 
     @PostMapping("/validate-token")
@@ -61,4 +64,31 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/refreshtoken")
+    public ResponseEntity<?> refreshtoken(@RequestBody TokenRefreshRequest request) {
+        String requestRefreshToken = request.getRefreshToken();
+
+        try {
+            return refreshTokenService.findByToken(requestRefreshToken)
+                    .map(refreshTokenService::verifyExpiration)
+                    .map(RefreshTokens::getUser)
+                    .map(user -> {
+                        String token = jwtService.generateToken(user.getEmail(), user.getRole().name());
+                        return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
+                    })
+                    .orElseThrow(() -> new RuntimeException("Refresh token is not in database!"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AuthModel(false, e.getMessage()));
+        }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestBody TokenRefreshRequest request) {
+        try {
+            refreshTokenService.revokeToken(request.getRefreshToken());
+            return ResponseEntity.ok(new AuthModel(true, "Log out successful"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new AuthModel(false, "Logout failed: " + e.getMessage()));
+        }
+    }
 }

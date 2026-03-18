@@ -3,16 +3,12 @@ package com.example.CampusSync.teacher.model;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import com.example.CampusSync.user.model.User;
 
 @Entity
 @Table(name = "teachers")
@@ -21,17 +17,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Teacher {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    @OneToOne(cascade = CascadeType.ALL)
+    @MapsId
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @Column(unique = true, nullable = false)
-    private String email;
+    @Column(nullable = false, name = "employee_id")
+    private String employeeId;
 
-    private String password;
+    @Column(nullable = false, name = "department_id")
+    private String departmentId;
 
-    @CreationTimestamp
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private String designation;
 }

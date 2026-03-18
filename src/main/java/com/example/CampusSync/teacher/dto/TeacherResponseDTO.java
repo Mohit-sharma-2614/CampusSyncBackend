@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter 
 @NoArgsConstructor 
 @AllArgsConstructor 
-public class TeacherDTO {
+public class TeacherResponseDTO {
 
     private Long id;
     private String name;
@@ -23,8 +23,8 @@ public class TeacherDTO {
     private String jwtToken;
     private String refreshToken;
 
-    // Constructor to convert from Teacher entity to TeacherDTO
-    public TeacherDTO(Teacher teacher) {
+    // Constructor to convert from Teacher entity to TeacherResponseDTO
+    public TeacherResponseDTO(Teacher teacher) {
         this.id = teacher.getId();
         if (teacher.getUser() != null) {
             this.name = teacher.getUser().getName();
@@ -35,7 +35,7 @@ public class TeacherDTO {
         this.designation = teacher.getDesignation();
     }
     
-    public TeacherDTO(Teacher teacher, String jwtToken, String refreshToken) {
+    public TeacherResponseDTO(Teacher teacher, String jwtToken, String refreshToken) {
         this(teacher);
         this.jwtToken = jwtToken;
         this.refreshToken = refreshToken;

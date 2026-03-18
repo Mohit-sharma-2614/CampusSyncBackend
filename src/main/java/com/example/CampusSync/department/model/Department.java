@@ -10,6 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
+
 @Entity
 @Table(name = "departments")
 @Data
@@ -22,4 +24,9 @@ public class Department {
 
     @Column(unique = true, nullable = false)
     private String name;
+
+    private String code;
+
+    @Column(name = "created_at")
+    private Timestamp createdAt;
 }

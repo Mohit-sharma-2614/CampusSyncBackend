@@ -1,6 +1,5 @@
 package com.example.CampusSync.teacher.controller;
 
-
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -16,11 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.CampusSync.teacher.dto.TeacherDTO;
+import com.example.CampusSync.teacher.dto.TeacherResponseDTO;
 import com.example.CampusSync.teacher.dto.TeacherLoginDTO;
-import com.example.CampusSync.teacher.dto.TeacherRegistrationRequest;
-import com.example.CampusSync.teacher.model.Teacher;
+import com.example.CampusSync.teacher.dto.TeacherRequestDTO;
 import com.example.CampusSync.teacher.service.TeacherServiceImpl;
+import com.example.CampusSync.common.exceptions.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @RestController
 @RequestMapping("/teacher")
@@ -31,15 +31,15 @@ public class TeacherController {
 
 
     @GetMapping("/all")
-    public ResponseEntity<List<TeacherDTO>> getAllTeachers() {
-        List<TeacherDTO> teachers = teacherService.getAllTeacher();
+    public ResponseEntity<List<TeacherResponseDTO>> getAllTeachers() {
+        List<TeacherResponseDTO> teachers = teacherService.getAllTeacher();
         return ResponseEntity.ok(teachers);
     }
 
     @GetMapping
-    public ResponseEntity<TeacherDTO> getTeacherById(@RequestParam("teacherId") String teacherId) {
+    public ResponseEntity<TeacherResponseDTO> getTeacherById(@RequestParam("teacherId") String teacherId) {
         try {
-            TeacherDTO teacher = teacherService.getTeacher(Long.parseLong(teacherId));
+            TeacherResponseDTO teacher = teacherService.getTeacher(Long.parseLong(teacherId));
             return ResponseEntity.ok(teacher);
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -48,20 +48,28 @@ public class TeacherController {
 
     @PostMapping("/login")
     public ResponseEntity<?> loginTeacher(@RequestBody TeacherLoginDTO teacher) {
-        TeacherDTO t = teacherService.verify(teacher);
-        return ResponseEntity.ok(t);
+        try {
+            TeacherResponseDTO t = teacherService.verify(teacher);
+            return ResponseEntity.ok(t);
+        } catch (UsernameNotFoundException | BadCredentialsException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+        }
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerTeacher(@RequestBody TeacherRegistrationRequest teacher) {
-        TeacherDTO created = teacherService.createTeacher(teacher);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    public ResponseEntity<?> registerTeacher(@RequestBody TeacherRequestDTO teacher) {
+        try {
+            TeacherResponseDTO created = teacherService.createTeacher(teacher);
+            return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+        }
     }
 
     @PutMapping
-    public ResponseEntity<TeacherDTO> updateTeacher(@RequestBody Teacher teacher) {
+    public ResponseEntity<TeacherResponseDTO> updateTeacher(@RequestParam("teacherId") String teacherId, @RequestBody TeacherRequestDTO teacher) {
         try {
-            TeacherDTO updated = teacherService.updateTeacher(teacher);
+            TeacherResponseDTO updated = teacherService.updateTeacher(Long.parseLong(teacherId), teacher);
             return ResponseEntity.ok(updated);
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);

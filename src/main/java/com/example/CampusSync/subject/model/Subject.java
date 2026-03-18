@@ -1,5 +1,6 @@
 package com.example.CampusSync.subject.model;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import com.example.CampusSync.department.model.Department;
@@ -31,17 +32,12 @@ public class Subject {
 
     private String code;
 
-    private int semester;
-//    private String totalClasses;
+    private Integer credits;
 
     @ManyToOne
     @JoinColumn(name = "department_id", nullable = false)
     private Department department;
 
-    @ManyToOne
-    @JoinColumn(name = "teacher_id", nullable = false)
-    private Teacher teacher;
-
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private Timestamp createdAt;
 }

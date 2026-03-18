@@ -1,7 +1,6 @@
 package com.example.CampusSync.common.security;
 
-import com.example.CampusSync.student.entity.Student;
-import com.example.CampusSync.teacher.model.Teacher;
+import com.example.CampusSync.user.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,47 +11,29 @@ import java.util.Collections;
 
 public class CampusUserPrincipal implements UserDetails {
 
-    private final Student student;
-    private final Teacher teacher;
+    private final User user;
 
-    // Constructor for Teacher
-    public CampusUserPrincipal(Teacher teacher) {
-        this.teacher = teacher;
-        this.student = null; // Ensure student is null
-    }
-
-    // Constructor for Student
-    public CampusUserPrincipal(Student student) {
-        this.student = student;
-        this.teacher = null; // Ensure teacher is null
+    public CampusUserPrincipal(User user) {
+        this.user = user;
     }
 
     // --- UserDetails Methods ---
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // For simplicity, assuming all authenticated users have a "USER" role.
-        return Collections.singleton(new SimpleGrantedAuthority("USER"));
-        // Best practice to prefix roles with "ROLE_" for Spring Security's hasRole() method
+        if (user != null && user.getRole() != null) {
+            return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
+        }
+        return Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     @Override
     public String getPassword() {
-        if (student != null) {
-            return student.getPassword();
-        } else if (teacher != null) {
-            return teacher.getPassword();
-        }
-        return null; // Or throw an exception if neither is set (shouldn't happen with proper construction)
+        return user != null ? user.getPasswordHash() : null;
     }
 
     @Override
     public String getUsername() {
-        if (student != null) {
-            return student.getEmail();
-        } else if (teacher != null) {
-            return teacher.getEmail();
-        }
-        return null; // Or throw an exception
+        return user != null ? user.getEmail() : null;
     }
 }

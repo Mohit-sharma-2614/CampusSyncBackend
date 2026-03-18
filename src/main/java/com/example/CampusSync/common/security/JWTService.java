@@ -33,15 +33,17 @@ public class JWTService {
 //        }
 //    }
 
-    public String generateToken(String email) {
+    public String generateToken(String email, String role) {
 
         Map<String,Object> claims = new HashMap<>();
+        claims.put("role", role);
+        
         return Jwts.builder()
                 .claims()
                 .add(claims)
                 .subject(email)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // 24 hours
                 .and()
                 .signWith(getKey())
                 .compact();
@@ -54,6 +56,10 @@ public class JWTService {
 
     public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);
+    }
+    
+    public String extractRole(String token) {
+        return extractAllClaims(token).get("role", String.class);
     }
 
     private <T> T extractClaim(String token, Function<Claims, T> claimResolver) {

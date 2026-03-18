@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.CampusSync.common.exceptions.BadCredentialsException;
-import com.example.CampusSync.student.dto.StudentDTO;
+import com.example.CampusSync.student.dto.StudentResponseDTO;
 import com.example.CampusSync.student.dto.StudentLoginDTO;
-import com.example.CampusSync.student.entity.Student;
+import com.example.CampusSync.student.dto.StudentRequestDTO;
 import com.example.CampusSync.student.service.StudentServiceImpl;
 
 @RestController
@@ -27,12 +27,12 @@ import com.example.CampusSync.student.service.StudentServiceImpl;
 public class StudentController {
 
     @Autowired
-    StudentServiceImpl studentService;
+    private StudentServiceImpl studentService;
 
     @PostMapping("/login")
     public ResponseEntity<?> loginStudent(@RequestBody StudentLoginDTO student){
         try {
-            StudentDTO s = studentService.verify(student);
+            StudentResponseDTO s = studentService.verify(student);
             return ResponseEntity.ok(s);
         } catch (UsernameNotFoundException | BadCredentialsException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
@@ -40,41 +40,36 @@ public class StudentController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerStudent(@RequestBody Student student){
-        StudentDTO s = studentService.createStudent(student);
-        if (s != null){
-            return ResponseEntity.ok(s);
+    public ResponseEntity<?> registerStudent(@RequestBody StudentRequestDTO studentRegisterDto){
+        try {
+            StudentResponseDTO s = studentService.createStudent(studentRegisterDto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(s);
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
         }
-        return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
 
 
     @GetMapping("/all")
-    public ResponseEntity<List<StudentDTO>> getAllStudents() {
-        List<StudentDTO> students = studentService.getAllStudents();
+    public ResponseEntity<List<StudentResponseDTO>> getAllStudents() {
+        List<StudentResponseDTO> students = studentService.getAllStudents();
         return ResponseEntity.ok(students);
     }
 
     @GetMapping
-    public ResponseEntity<StudentDTO> getStudentById(@RequestParam("studentId") String studentId) {
+    public ResponseEntity<StudentResponseDTO> getStudentById(@RequestParam("studentId") String studentId) {
         try {
-            StudentDTO student = studentService.getStudent(Long.parseLong(studentId));
+            StudentResponseDTO student = studentService.getStudent(Long.parseLong(studentId));
             return ResponseEntity.ok(student);
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 
-    @PostMapping
-    public ResponseEntity<StudentDTO> createStudent(@RequestBody Student student) {
-        StudentDTO created = studentService.createStudent(student);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
-    }
-
     @PutMapping
-    public ResponseEntity<StudentDTO> updateStudent(@RequestBody Student student) {
+    public ResponseEntity<StudentResponseDTO> updateStudent(@RequestParam("studentId") String studentId, @RequestBody StudentRequestDTO student) {
         try {
-            StudentDTO updated = studentService.updateStudent(student);
+            StudentResponseDTO updated = studentService.updateStudent(Long.parseLong(studentId), student);
             return ResponseEntity.ok(updated);
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -91,4 +86,3 @@ public class StudentController {
         }
     }
 }
-

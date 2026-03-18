@@ -3,6 +3,7 @@ package com.example.CampusSync.attendance_token.model;
 import java.sql.Timestamp;
 import java.util.UUID;
 
+import com.example.CampusSync.lecturesessions.model.LectureSessions;
 import com.example.CampusSync.subject.model.Subject;
 import com.example.CampusSync.teacher.model.Teacher;
 
@@ -29,12 +30,11 @@ public class AttendanceToken {
     private UUID token;
 
     @ManyToOne
-    @JoinColumn(name = "subject_id", nullable = false)
-    private Subject subject;
+    @JoinColumn(name = "lecture_session_id", nullable = false)
+    private LectureSessions lectureSessions;
 
-    @ManyToOne
-    @JoinColumn(name = "teacher_id", nullable = false)
-    private Teacher teacher;
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive;
 
     @Column(name = "generated_at", nullable = false)
     private Timestamp generatedAt;
