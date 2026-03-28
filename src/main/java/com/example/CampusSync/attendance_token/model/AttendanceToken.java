@@ -4,8 +4,6 @@ import java.sql.Timestamp;
 import java.util.UUID;
 
 import com.example.CampusSync.lecturesessions.model.LectureSessions;
-import com.example.CampusSync.subject.model.Subject;
-import com.example.CampusSync.teacher.model.Teacher;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

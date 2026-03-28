@@ -1,10 +1,7 @@
 package com.example.CampusSync.subject.model;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-
 import com.example.CampusSync.department.model.Department;
-import com.example.CampusSync.teacher.model.Teacher;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

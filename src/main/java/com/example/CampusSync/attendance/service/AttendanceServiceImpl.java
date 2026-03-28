@@ -48,8 +48,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     public List<AttendanceDTO> getAttendanceByLectureSessionId(Long lectureSessionId) {
-        LectureSessions session = lectureSessionsRepository.findById(lectureSessionId)
-                .orElseThrow(() -> new ResourceNotFoundException("Lecture Session not found with ID: " + lectureSessionId));
+        // LectureSessions session = lectureSessionsRepository.findById(lectureSessionId)
+        //         .orElseThrow(() -> new ResourceNotFoundException("Lecture Session not found with ID: " + lectureSessionId));
 
         List<Attendance> attendances = attendanceRepository.findByLectureSessionId(lectureSessionId);
         return attendances.stream().map(AttendanceDTO::new).toList();
@@ -57,8 +57,8 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     public List<AttendanceDTO> getAttendanceByEnrollmentId(Long enrollmentId) {
-        Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
-                .orElseThrow(() -> new ResourceNotFoundException("Enrollment not found with ID: " + enrollmentId));
+        // Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
+        //         .orElseThrow(() -> new ResourceNotFoundException("Enrollment not found with ID: " + enrollmentId));
 
         List<Attendance> attendances = attendanceRepository.findByEnrollmentId(enrollmentId);
         return attendances.stream().map(AttendanceDTO::new).toList();

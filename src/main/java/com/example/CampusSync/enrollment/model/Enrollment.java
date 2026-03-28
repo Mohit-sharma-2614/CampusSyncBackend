@@ -6,7 +6,6 @@ import com.example.CampusSync.courseofferings.model.CourseOfferings;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.example.CampusSync.student.entity.Student;
-import com.example.CampusSync.subject.model.Subject;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
