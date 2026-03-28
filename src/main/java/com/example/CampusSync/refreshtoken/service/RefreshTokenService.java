@@ -58,4 +58,21 @@ public class RefreshTokenService {
             refreshTokenRepository.save(token);
         });
     }
+
+    public java.util.List<com.example.CampusSync.refreshtoken.dto.RefreshTokenDTO> getAllTokens() {
+        return refreshTokenRepository.findAll().stream()
+                .map(com.example.CampusSync.refreshtoken.dto.RefreshTokenDTO::new)
+                .collect(java.util.stream.Collectors.toList());
+    }
+
+    public Optional<com.example.CampusSync.refreshtoken.dto.RefreshTokenDTO> getTokenById(Long id) {
+        return refreshTokenRepository.findById(id)
+                .map(com.example.CampusSync.refreshtoken.dto.RefreshTokenDTO::new);
+    }
+
+    public java.util.List<com.example.CampusSync.refreshtoken.dto.RefreshTokenDTO> getTokensByUserId(Long userId) {
+        return refreshTokenRepository.findByUserId(userId).stream()
+                .map(com.example.CampusSync.refreshtoken.dto.RefreshTokenDTO::new)
+                .collect(java.util.stream.Collectors.toList());
+    }
 }

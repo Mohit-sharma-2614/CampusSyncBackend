@@ -10,13 +10,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.CampusSync.common.exceptions.ResourceNotFoundException;
 import com.example.CampusSync.enrollment.dto.EnrollmentDTO;
+import com.example.CampusSync.enrollment.dto.EnrollmentDetailsDTO;
 import com.example.CampusSync.enrollment.dto.EnrollmentInputDTO;
 import com.example.CampusSync.enrollment.model.Enrollment;
 import com.example.CampusSync.enrollment.repository.EnrollmentRepository;
 import com.example.CampusSync.student.entity.Student;
 import com.example.CampusSync.student.repository.StudentRepository;
-import com.example.CampusSync.subject.model.Subject;
-import com.example.CampusSync.subject.repository.SubjectRepository;
+import com.example.CampusSync.courseofferings.model.CourseOfferings;
+import com.example.CampusSync.courseofferings.repository.CourseOfferingsRepository;
 
 @ComponentScan
 @Service
@@ -28,7 +29,7 @@ public class EnrollmentServiceImpl implements EnrollmentService{
     StudentRepository studentRepository;
 
     @Autowired
-    SubjectRepository subjectRepository;
+    CourseOfferingsRepository courseOfferingsRepository;
 
     @Override
     public List<EnrollmentDTO> getAllEnrollment() {
@@ -48,18 +49,18 @@ public class EnrollmentServiceImpl implements EnrollmentService{
     }
 
     @Override
-    public List<EnrollmentDTO> findBySubjectId(Long subjectId) {
-        List<Enrollment> enrollments = enrollmentRepository.findBySubjectId(subjectId)
-                .orElseThrow(() -> new ResourceNotFoundException("Enrollment not found for SubjectId: "+subjectId));
+    public List<EnrollmentDTO> findByCourseOfferingId(Long courseOfferingId) {
+        List<Enrollment> enrollments = enrollmentRepository.findByCourseOfferingId(courseOfferingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Enrollment not found for courseOfferingId: "+courseOfferingId));
         return enrollments.stream()
                 .map(EnrollmentDTO::new)
                 .toList();
     }
 
     @Override
-    public List<EnrollmentDTO> findByStudentIdAndSubjectId(Long studentId, Long subjectId) {
-        List<Enrollment> enrollments = enrollmentRepository.findByStudentIdAndSubjectId(studentId,subjectId)
-                .orElseThrow(() -> new ResourceNotFoundException("Enrollment not found for SubjectId: "+subjectId+" and studentId: "+studentId));
+    public List<EnrollmentDTO> findByStudentIdAndCourseOfferingId(Long studentId, Long courseOfferingId) {
+        List<Enrollment> enrollments = enrollmentRepository.findByStudentIdAndCourseOfferingId(studentId,courseOfferingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Enrollment not found for courseOfferingId: "+courseOfferingId+" and studentId: "+studentId));
         return enrollments.stream()
                 .map(EnrollmentDTO::new)
                 .toList();
@@ -72,10 +73,16 @@ public class EnrollmentServiceImpl implements EnrollmentService{
         return new EnrollmentDTO(enrollment);
     }
 
+    @Override
+    public EnrollmentDetailsDTO getEnrollmentDetails(Long enrollmentId) {
+        Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
+                .orElseThrow(()-> new ResourceNotFoundException("Enrollment not found with ID: "+enrollmentId));
+        return new EnrollmentDetailsDTO(enrollment);
+    }
+
     @Transactional
     @Override
     public EnrollmentDTO createEnrollment(EnrollmentInputDTO enrollmentDTO) {
-        enrollmentDTO.setCreatedAt(LocalDateTime.now());
 
         if (enrollmentDTO.getStudentId() == null) {
             throw new IllegalArgumentException("Student ID cannot be null");
@@ -83,16 +90,22 @@ public class EnrollmentServiceImpl implements EnrollmentService{
         Student student = studentRepository.findById(enrollmentDTO.getStudentId())
                 .orElseThrow(() -> new ResourceNotFoundException("Student not found with ID: " + enrollmentDTO.getStudentId()));
 
-        // Validate subject
-        if (enrollmentDTO.getSubjectId() == null) {
-            throw new IllegalArgumentException("Subject ID cannot be null");
+        // Validate courseOffering
+        if (enrollmentDTO.getCourseOfferingId() == null) {
+            throw new IllegalArgumentException("CourseOffering ID cannot be null");
         }
-        Subject subject = subjectRepository.findById(enrollmentDTO.getSubjectId())
-                .orElseThrow(() -> new ResourceNotFoundException("Subject not found with ID: " + enrollmentDTO.getSubjectId()));
+        CourseOfferings courseOfferings = courseOfferingsRepository.findById(enrollmentDTO.getCourseOfferingId())
+                .orElseThrow(() -> new ResourceNotFoundException("CourseOffering not found with ID: " + enrollmentDTO.getCourseOfferingId()));
 
         Enrollment enrollment = new Enrollment();
         enrollment.setStudent(student);
-        enrollment.setSubject(subject);
+        enrollment.setCourseOfferings(courseOfferings);
+        
+        if (enrollmentDTO.getCreatedAt() != null) {
+            enrollment.setCreatedAt(enrollmentDTO.getCreatedAt());
+        } else {
+            enrollment.setCreatedAt(LocalDateTime.now());
+        }
 
         // Save the enrollment to the database
         Enrollment savedEnrollment = enrollmentRepository.save(enrollment);
@@ -101,12 +114,12 @@ public class EnrollmentServiceImpl implements EnrollmentService{
 
     @Transactional
     @Override
-    public EnrollmentDTO updateEnrollment(EnrollmentInputDTO enrollmentDTO) {
-        if (enrollmentDTO.getId() == null) {
+    public EnrollmentDTO updateEnrollment(Long enrollmentId, EnrollmentInputDTO enrollmentDTO) {
+        if (enrollmentId == null) {
             throw new IllegalArgumentException("Enrollment ID cannot be null");
         }
-        if (!enrollmentRepository.existsById(enrollmentDTO.getId())) {
-            throw new ResourceNotFoundException("Enrollment not found with ID: " + enrollmentDTO.getId());
+        if (!enrollmentRepository.existsById(enrollmentId)) {
+            throw new ResourceNotFoundException("Enrollment not found with ID: " + enrollmentId);
         }
 
         // Validate student
@@ -116,18 +129,23 @@ public class EnrollmentServiceImpl implements EnrollmentService{
         Student student = studentRepository.findById(enrollmentDTO.getStudentId())
                 .orElseThrow(() -> new ResourceNotFoundException("Student not found with ID: " + enrollmentDTO.getStudentId()));
 
-        // Validate subject
-        if (enrollmentDTO.getSubjectId() == null) {
-            throw new IllegalArgumentException("Subject ID cannot be null");
+        // Validate courseOffering
+        if (enrollmentDTO.getCourseOfferingId() == null) {
+            throw new IllegalArgumentException("CourseOffering ID cannot be null");
         }
-        Subject subject = subjectRepository.findById(enrollmentDTO.getSubjectId())
-                .orElseThrow(() -> new ResourceNotFoundException("Subject not found with ID: " + enrollmentDTO.getSubjectId()));
+        CourseOfferings courseOfferings = courseOfferingsRepository.findById(enrollmentDTO.getCourseOfferingId())
+                .orElseThrow(() -> new ResourceNotFoundException("CourseOffering not found with ID: " + enrollmentDTO.getCourseOfferingId()));
 
-        // Map DTO to entity
-        Enrollment enrollment = new Enrollment();
-        enrollment.setId(enrollmentDTO.getId());
+        // Fetch existing entity to avoid overwriting createdAt
+        Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Enrollment not found with ID: " + enrollmentId));
+        
         enrollment.setStudent(student);
-        enrollment.setSubject(subject);
+        enrollment.setCourseOfferings(courseOfferings);
+        
+        if (enrollmentDTO.getCreatedAt() != null) {
+            enrollment.setCreatedAt(enrollmentDTO.getCreatedAt());
+        }
 
         // Save updated enrollment
         Enrollment updatedEnrollment = enrollmentRepository.save(enrollment);

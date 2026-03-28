@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.CampusSync.enrollment.dto.EnrollmentDTO;
+import com.example.CampusSync.enrollment.dto.EnrollmentDetailsDTO;
 import com.example.CampusSync.enrollment.dto.EnrollmentInputDTO;
 import com.example.CampusSync.enrollment.service.EnrollmentServiceImpl;
 
@@ -44,23 +46,23 @@ public class EnrollmentController {
         }
     }
 
-    @GetMapping("/subject")
-    public ResponseEntity<List<EnrollmentDTO>> getEnrollmentsBySubjectId(
-            @RequestParam("subjectId") Long subjectId) {
+    @GetMapping("/course-offering")
+    public ResponseEntity<List<EnrollmentDTO>> getEnrollmentsByCourseOfferingId(
+            @RequestParam("courseOfferingId") Long courseOfferingId) {
         try {
-            List<EnrollmentDTO> enrollments = enrollmentService.findBySubjectId(subjectId);
+            List<EnrollmentDTO> enrollments = enrollmentService.findByCourseOfferingId(courseOfferingId);
             return ResponseEntity.ok(enrollments);
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 
-    @GetMapping("/student-subject")
-    public ResponseEntity<List<EnrollmentDTO>> getEnrollmentsByStudentIdAndSubjectId(
+    @GetMapping("/student-course-offering")
+    public ResponseEntity<List<EnrollmentDTO>> getEnrollmentsByStudentIdAndCourseOfferingId(
             @RequestParam("studentId") Long studentId,
-            @RequestParam("subjectId") Long subjectId) {
+            @RequestParam("courseOfferingId") Long courseOfferingId) {
         try {
-            List<EnrollmentDTO> enrollments = enrollmentService.findByStudentIdAndSubjectId(studentId, subjectId);
+            List<EnrollmentDTO> enrollments = enrollmentService.findByStudentIdAndCourseOfferingId(studentId, courseOfferingId);
             return ResponseEntity.ok(enrollments);
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -78,6 +80,17 @@ public class EnrollmentController {
         }
     }
 
+    @GetMapping("/details/{enrollmentId}")
+    public ResponseEntity<EnrollmentDetailsDTO> getEnrollmentDetailsById(
+            @PathVariable Long enrollmentId) {
+        try {
+            EnrollmentDetailsDTO enrollment = enrollmentService.getEnrollmentDetails(enrollmentId);
+            return ResponseEntity.ok(enrollment);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
     @PostMapping
     public ResponseEntity<EnrollmentDTO> createEnrollment(
             @RequestBody EnrollmentInputDTO enrollment) {
@@ -87,9 +100,10 @@ public class EnrollmentController {
 
     @PutMapping
     public ResponseEntity<EnrollmentDTO> updateEnrollment(
+            @RequestParam("enrollmentId") String enrollmentId,
             @RequestBody EnrollmentInputDTO enrollment) {
         try {
-            EnrollmentDTO updated = enrollmentService.updateEnrollment(enrollment);
+            EnrollmentDTO updated = enrollmentService.updateEnrollment(Long.parseLong(enrollmentId), enrollment);
             return ResponseEntity.ok(updated);
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);

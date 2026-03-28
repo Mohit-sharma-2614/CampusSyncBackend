@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.CampusSync.department.dto.DepartmentDTO;
+import com.example.CampusSync.department.dto.DepartmentInputDTO;
 import com.example.CampusSync.department.model.Department;
 import com.example.CampusSync.department.service.DepartmentServiceImpl;
 
@@ -46,11 +47,12 @@ public class DepartmentController {
 
     @PostMapping
     public ResponseEntity<DepartmentDTO> createDepartment(
-            @RequestBody Department department) {
-        DepartmentDTO created = departmentService.createDepartment(department);
+            @RequestBody DepartmentInputDTO departmentInputDTO) {
+        DepartmentDTO created = departmentService.createDepartment(departmentInputDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
+    // TODO: change the request body to DepartmentInputDTO
     @PutMapping
     public ResponseEntity<DepartmentDTO> updateDepartment(
             @RequestBody Department department) {

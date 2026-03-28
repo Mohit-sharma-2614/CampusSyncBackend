@@ -27,10 +27,10 @@ public class LectureSessions {
     @Column(name = "session_date", nullable = false)
     private Date sessionDate;
 
-    @Column(name = "start_time", nullable = false)
+    @Column(name = "start_time")
     private Timestamp startTime;
 
-    @Column(name = "end_time", nullable = false)
+    @Column(name = "end_time")
     private Timestamp endTime;
 
     private String room;

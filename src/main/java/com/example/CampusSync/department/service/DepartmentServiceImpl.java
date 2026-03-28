@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.CampusSync.common.exceptions.ResourceNotFoundException;
 import com.example.CampusSync.department.dto.DepartmentDTO;
+import com.example.CampusSync.department.dto.DepartmentInputDTO;
 import com.example.CampusSync.department.model.Department;
 import com.example.CampusSync.department.repository.DepartmentRepository;
 
@@ -32,7 +33,11 @@ public class DepartmentServiceImpl implements DepartmentService{
     }
 
     @Override
-    public DepartmentDTO createDepartment(Department department) {
+    public DepartmentDTO createDepartment(DepartmentInputDTO departmentInputDTO) {
+        Department department = new Department();
+        department.setName(departmentInputDTO.getName());
+        department.setCode(departmentInputDTO.getCode());
+        department.setCreatedAt(new java.sql.Timestamp(System.currentTimeMillis()));
         Department d = departmentRepository.save(department);
         return new DepartmentDTO(d);
     }

@@ -4,8 +4,6 @@ import java.sql.Timestamp;
 import java.util.UUID;
 
 import com.example.CampusSync.attendance_token.model.AttendanceToken;
-import com.example.CampusSync.subject.dto.SubjectDTO;
-import com.example.CampusSync.teacher.dto.TeacherDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,15 +16,15 @@ import lombok.Setter;
 @Getter
 public class AttendanceTokenDTO {
     private UUID token;
-    private SubjectDTO subject;
-    private TeacherDTO teacher;
+    private Long lectureSessionId;
     private Timestamp generatedAt;
     private Timestamp expiresAt;
 
     public AttendanceTokenDTO(AttendanceToken attendanceToken){
         this.token = attendanceToken.getToken();
-        this.subject = new SubjectDTO(attendanceToken.getSubject());
-        this.teacher = new TeacherDTO(attendanceToken.getTeacher());
+        if (attendanceToken.getLectureSessions() != null) {
+            this.lectureSessionId = attendanceToken.getLectureSessions().getId();
+        }
         this.generatedAt = attendanceToken.getGeneratedAt();
         this.expiresAt = attendanceToken.getExpiresAt();
     }

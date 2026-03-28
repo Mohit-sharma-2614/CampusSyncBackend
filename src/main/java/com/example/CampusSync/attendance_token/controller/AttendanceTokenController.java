@@ -2,6 +2,7 @@ package com.example.CampusSync.attendance_token.controller;
 
 
 import com.example.CampusSync.attendance_token.dto.AttendanceTokenDTO;
+import com.example.CampusSync.attendance_token.dto.AttendanceTokenDetailsDTO;
 import com.example.CampusSync.attendance_token.dto.AttendanceTokenInputDTO;
 import com.example.CampusSync.attendance_token.model.AttendanceToken;
 import com.example.CampusSync.attendance_token.service.AttendanceTokenServiceImpl;
@@ -33,6 +34,18 @@ public class AttendanceTokenController {
     ){
         try {
             AttendanceTokenDTO token = attendanceTokensService.getToken(UUID.fromString(tokenId));
+            return ResponseEntity.ok(token);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    @GetMapping("/details/{tokenId}")
+    public ResponseEntity<AttendanceTokenDetailsDTO> getAttendanceTokenDetailsById(
+            @PathVariable String tokenId
+    ){
+        try {
+            AttendanceTokenDetailsDTO token = attendanceTokensService.getTokenDetails(UUID.fromString(tokenId));
             return ResponseEntity.ok(token);
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);

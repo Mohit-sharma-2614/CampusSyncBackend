@@ -13,7 +13,7 @@ public class StudentRequestDTO {
     
     // Student fields
     private String rollNumber;
-    private String departmentId;
+    private Long departmentId;
     private Integer year;
     private Integer semester;
     private String section;

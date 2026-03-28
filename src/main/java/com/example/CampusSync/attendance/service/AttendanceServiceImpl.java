@@ -1,10 +1,6 @@
 package com.example.CampusSync.attendance.service;
 
 import java.lang.module.ResolutionException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,28 +10,33 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.CampusSync.attendance.dto.AttendanceDTO;
+import com.example.CampusSync.attendance.dto.AttendanceDetailsDTO;
 import com.example.CampusSync.attendance.dto.AttendanceInputDTO;
 import com.example.CampusSync.attendance.model.Attendance;
 import com.example.CampusSync.attendance.repository.AttendanceRepository;
+import com.example.CampusSync.attendance_token.model.AttendanceToken;
+import com.example.CampusSync.attendance_token.repository.AttendanceTokenRepository;
 import com.example.CampusSync.common.exceptions.ResourceNotFoundException;
-import com.example.CampusSync.student.entity.Student;
-import com.example.CampusSync.student.repository.StudentRepository;
-import com.example.CampusSync.subject.model.Subject;
-import com.example.CampusSync.subject.repository.SubjectRepository;
-
+import com.example.CampusSync.enrollment.model.Enrollment;
+import com.example.CampusSync.enrollment.repository.EnrollmentRepository;
+import com.example.CampusSync.lecturesessions.model.LectureSessions;
+import com.example.CampusSync.lecturesessions.repository.LectureSessionsRepository;
 
 @ComponentScan
 @Service
-public class AttendanceServiceImpl implements AttendanceService{
-    @Autowired
-    AttendanceRepository attendanceRepository;
+public class AttendanceServiceImpl implements AttendanceService {
 
     @Autowired
-    SubjectRepository subjectRepository;
+    private AttendanceRepository attendanceRepository;
 
     @Autowired
-    StudentRepository studentRepository;
+    private EnrollmentRepository enrollmentRepository;
 
+    @Autowired
+    private LectureSessionsRepository lectureSessionsRepository;
+
+    @Autowired
+    private AttendanceTokenRepository attendanceTokenRepository;
 
     @Override
     public List<AttendanceDTO> getAllAttendance() {
@@ -46,75 +47,76 @@ public class AttendanceServiceImpl implements AttendanceService{
     }
 
     @Override
-    public List<AttendanceDTO> getAttendanceBySubjectId(Long subjectId) {
-        // Verify subject exists
-        Subject subject = subjectRepository.findById(subjectId)
-                .orElseThrow(() -> new ResourceNotFoundException("Subject not found with ID: " + subjectId));
+    public List<AttendanceDTO> getAttendanceByLectureSessionId(Long lectureSessionId) {
+        LectureSessions session = lectureSessionsRepository.findById(lectureSessionId)
+                .orElseThrow(() -> new ResourceNotFoundException("Lecture Session not found with ID: " + lectureSessionId));
 
-        // Fetch and map
-        List<Attendance> attendances = attendanceRepository.findBySubjectId(subjectId);
+        List<Attendance> attendances = attendanceRepository.findByLectureSessionId(lectureSessionId);
         return attendances.stream().map(AttendanceDTO::new).toList();
     }
 
     @Override
-    public List<AttendanceDTO> getAttendanceByStudentId(Long studentId) {
-        // Verify student exists
-        Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new ResourceNotFoundException("Student not found with ID: " + studentId));
+    public List<AttendanceDTO> getAttendanceByEnrollmentId(Long enrollmentId) {
+        Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Enrollment not found with ID: " + enrollmentId));
 
-        // Fetch and map
-        List<Attendance> attendances = attendanceRepository.findByStudentId(studentId);
+        List<Attendance> attendances = attendanceRepository.findByEnrollmentId(enrollmentId);
         return attendances.stream().map(AttendanceDTO::new).toList();
     }
 
     @Override
-    public List<AttendanceDTO> getAttendanceBySubjectAndStudentId(Long subjectId, Long studentId) {
-        // Verify subject and student exist
-        Subject subject = subjectRepository.findById(subjectId)
-                .orElseThrow(() -> new ResourceNotFoundException("Subject not found with ID: " + subjectId));
+    public List<AttendanceDTO> getAttendanceByLectureSessionAndEnrollmentId(Long lectureSessionId, Long enrollmentId) {
+        lectureSessionsRepository.findById(lectureSessionId)
+                .orElseThrow(() -> new ResourceNotFoundException("Lecture Session not found with ID: " + lectureSessionId));
 
-        Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new ResourceNotFoundException("Student not found with ID: " + studentId));
+        enrollmentRepository.findById(enrollmentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Enrollment not found with ID: " + enrollmentId));
 
-        // Fetch and map
-        List<Attendance> attendances = attendanceRepository.findBySubjectIdAndStudentId(subjectId, studentId);
+        List<Attendance> attendances = attendanceRepository.findByLectureSessionIdAndEnrollmentId(lectureSessionId, enrollmentId);
         return attendances.stream().map(AttendanceDTO::new).toList();
     }
-
 
     @Override
     public AttendanceDTO getAttendance(Long attendanceId) {
         Attendance a = attendanceRepository.findById(attendanceId)
-                .orElseThrow(() -> new ResolutionException("Attendance not found with ID: "+attendanceId));
+                .orElseThrow(() -> new ResolutionException("Attendance not found with ID: " + attendanceId));
         return new AttendanceDTO(a);
+    }
+
+    @Override
+    public AttendanceDetailsDTO getAttendanceDetails(Long attendanceId) {
+        Attendance a = attendanceRepository.findById(attendanceId)
+                .orElseThrow(() -> new ResourceNotFoundException("Attendance not found with ID: " + attendanceId));
+        return new AttendanceDetailsDTO(a);
     }
 
     @Transactional
     @Override
     public AttendanceDTO createAttendance(AttendanceInputDTO attendanceDTO) {
-        // Validate studentId
-        if (attendanceDTO.getStudentId() == null) {
-            throw new IllegalArgumentException("Student ID cannot be null");
+        if (attendanceDTO.getEnrollmentId() == null) {
+            throw new IllegalArgumentException("Enrollment ID cannot be null");
         }
-        Student student = studentRepository.findById(attendanceDTO.getStudentId())
-                .orElseThrow(() -> new ResourceNotFoundException("Student not found with ID: " + attendanceDTO.getStudentId()));
+        Enrollment enrollment = enrollmentRepository.findById(attendanceDTO.getEnrollmentId())
+                .orElseThrow(() -> new ResourceNotFoundException("Enrollment not found with ID: " + attendanceDTO.getEnrollmentId()));
 
-        // Validate subjectId
-        if (attendanceDTO.getSubjectId() == null) {
-            throw new IllegalArgumentException("Subject ID cannot be null");
+        if (attendanceDTO.getLectureSessionId() == null) {
+            throw new IllegalArgumentException("Lecture Session ID cannot be null");
         }
-        Subject subject = subjectRepository.findById(attendanceDTO.getSubjectId())
-                .orElseThrow(() -> new ResourceNotFoundException("Subject not found with ID: " + attendanceDTO.getSubjectId()));
+        LectureSessions session = lectureSessionsRepository.findById(attendanceDTO.getLectureSessionId())
+                .orElseThrow(() -> new ResourceNotFoundException("Lecture Session not found with ID: " + attendanceDTO.getLectureSessionId()));
 
-        // Create and populate Attendance entity
+        if (attendanceDTO.getTokenId() == null) {
+            throw new IllegalArgumentException("Token ID cannot be null");
+        }
+        AttendanceToken token = attendanceTokenRepository.findById(attendanceDTO.getTokenId())
+                .orElseThrow(() -> new ResourceNotFoundException("Token not found with ID: " + attendanceDTO.getTokenId()));
+
         Attendance attendance = new Attendance();
-        attendance.setStudent(student);
-        attendance.setSubject(subject);
-        attendance.setCreatedAt(LocalDateTime.now());
-        attendance.setDate(LocalDate.now());
+        attendance.setEnrollment(enrollment);
+        attendance.setLectureSessions(session);
+        attendance.setToke(token);
         attendance.setStatus(attendanceDTO.getStatus());
 
-        // Save to database
         Attendance savedAttendance = attendanceRepository.save(attendance);
         return new AttendanceDTO(savedAttendance);
     }
@@ -127,89 +129,67 @@ public class AttendanceServiceImpl implements AttendanceService{
         }
 
         List<Attendance> attendances = attendanceInputs.stream().map(input -> {
-            // Validate student
-            Student student = studentRepository.findById(input.getStudentId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Student not found with id: " + input.getStudentId()));
+            Enrollment enrollment = enrollmentRepository.findById(input.getEnrollmentId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Enrollment not found with id: " + input.getEnrollmentId()));
 
-            // Validate subject
-            Subject subject = subjectRepository.findById(input.getSubjectId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Subject not found with id: " + input.getSubjectId()));
+            LectureSessions session = lectureSessionsRepository.findById(input.getLectureSessionId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Lecture Session not found with id: " + input.getLectureSessionId()));
 
-            // Validate status
+            AttendanceToken token = attendanceTokenRepository.findById(input.getTokenId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Token not found with id: " + input.getTokenId()));
+
             if (input.getStatus() == null) {
                 throw new IllegalArgumentException("Invalid status: " + input.getStatus());
             }
 
-            // Create Attendance entity
             Attendance attendance = new Attendance();
-            attendance.setStudent(student);
-            attendance.setSubject(subject);
-            attendance.setDate(LocalDate.now()); // Default to today; adjust if input includes date
+            attendance.setEnrollment(enrollment);
+            attendance.setLectureSessions(session);
+            attendance.setToke(token);
             attendance.setStatus(input.getStatus());
 
             return attendance;
         }).collect(Collectors.toList());
 
-        // Save all attendance records
         List<Attendance> savedAttendances = attendanceRepository.saveAll(attendances);
         return savedAttendances.stream()
                 .map(AttendanceDTO::new)
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public List<AttendanceDTO> getAttendanceBySubjectAndDate(Long subjectId, String date) {
-        try {
-            LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ISO_LOCAL_DATE);
-
-            // Validate subject
-            subjectRepository.findById(subjectId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Subject not found with id: " + subjectId));
-
-            List<Attendance> attendances = attendanceRepository.findBySubjectIdAndDate(subjectId, localDate)
-                    .orElseThrow(() -> new ResourceNotFoundException("No attendance records found for subjectId: " + subjectId + " on date: " + date));
-
-            return attendances.stream()
-                    .map(AttendanceDTO::new)
-                    .collect(Collectors.toList());
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("Invalid date format: " + date, e);
-        }
-    }
-
     @Transactional
     @Override
-    public AttendanceDTO updateAttendance(AttendanceInputDTO attendanceDTO) {
-        Long attendanceId = attendanceDTO.getId();
-
+    public AttendanceDTO updateAttendance(Long attendanceId, AttendanceInputDTO attendanceDTO) {
         if (attendanceId == null) {
             throw new IllegalArgumentException("Attendance ID cannot be null");
         }
 
-        // Check if attendance exists
         Attendance existingAttendance = attendanceRepository.findById(attendanceId)
                 .orElseThrow(() -> new ResourceNotFoundException("Attendance not found with ID: " + attendanceId));
 
-        // Validate and fetch student
-        if (attendanceDTO.getStudentId() == null) {
-            throw new IllegalArgumentException("Student ID cannot be null");
+        if (attendanceDTO.getEnrollmentId() == null) {
+            throw new IllegalArgumentException("Enrollment ID cannot be null");
         }
-        Student student = studentRepository.findById(attendanceDTO.getStudentId())
-                .orElseThrow(() -> new ResourceNotFoundException("Student not found with ID: " + attendanceDTO.getStudentId()));
+        Enrollment enrollment = enrollmentRepository.findById(attendanceDTO.getEnrollmentId())
+                .orElseThrow(() -> new ResourceNotFoundException("Enrollment not found with ID: " + attendanceDTO.getEnrollmentId()));
 
-        // Validate and fetch subject
-        if (attendanceDTO.getSubjectId() == null) {
-            throw new IllegalArgumentException("Subject ID cannot be null");
+        if (attendanceDTO.getLectureSessionId() == null) {
+            throw new IllegalArgumentException("Lecture Session ID cannot be null");
         }
-        Subject subject = subjectRepository.findById(attendanceDTO.getSubjectId())
-                .orElseThrow(() -> new ResourceNotFoundException("Subject not found with ID: " + attendanceDTO.getSubjectId()));
+        LectureSessions session = lectureSessionsRepository.findById(attendanceDTO.getLectureSessionId())
+                .orElseThrow(() -> new ResourceNotFoundException("Lecture Session not found with ID: " + attendanceDTO.getLectureSessionId()));
 
-        // Update fields
-        existingAttendance.setStudent(student);
-        existingAttendance.setSubject(subject);
-        // Preserve createdAt unless explicitly provided
+        if (attendanceDTO.getTokenId() == null) {
+            throw new IllegalArgumentException("Token ID cannot be null");
+        }
+        AttendanceToken token = attendanceTokenRepository.findById(attendanceDTO.getTokenId())
+                .orElseThrow(() -> new ResourceNotFoundException("Token not found with ID: " + attendanceDTO.getTokenId()));
 
-        // Save updated entity
+        existingAttendance.setEnrollment(enrollment);
+        existingAttendance.setLectureSessions(session);
+        existingAttendance.setToke(token);
+        existingAttendance.setStatus(attendanceDTO.getStatus());
+
         Attendance updatedAttendance = attendanceRepository.saveAndFlush(existingAttendance);
         return new AttendanceDTO(updatedAttendance);
     }
@@ -217,7 +197,7 @@ public class AttendanceServiceImpl implements AttendanceService{
     @Override
     public void deleteAttendance(Long attendanceId) {
         if(!attendanceRepository.existsById(attendanceId)){
-            throw new ResourceNotFoundException("Attendance not found with ID: "+attendanceId);
+            throw new ResourceNotFoundException("Attendance not found with ID: " + attendanceId);
         }
 
         attendanceRepository.deleteById(attendanceId);

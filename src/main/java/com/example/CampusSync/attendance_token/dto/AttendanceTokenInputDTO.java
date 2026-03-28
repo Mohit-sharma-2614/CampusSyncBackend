@@ -10,5 +10,5 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AttendanceTokenInputDTO {
-    private Long subjectId;
+    private Long lectureSessionId;
 }

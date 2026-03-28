@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.CampusSync.subject.dto.SubjectDTO;
-import com.example.CampusSync.subject.model.Subject;
+import com.example.CampusSync.subject.dto.SubjectDetailsDTO;
+import com.example.CampusSync.subject.dto.SubjectInputDTO;
 import com.example.CampusSync.subject.service.SubjectServiceImpl;
 
 @RestController
@@ -43,16 +45,27 @@ public class SubjectController {
         }
     }
 
+    // TODO: Remove one of the getSubjectById or getSubjectDetailsById as they are same
+    @GetMapping("/details/{subjectId}")
+    public ResponseEntity<SubjectDetailsDTO> getSubjectDetailsById(@PathVariable Long subjectId) {
+        try {
+            SubjectDetailsDTO subject = subjectService.getSubjectDetails(subjectId);
+            return ResponseEntity.ok(subject);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
     @PostMapping
-    public ResponseEntity<SubjectDTO> createSubject(@RequestBody Subject subject) {
-        SubjectDTO created = subjectService.createSubject(subject);
+    public ResponseEntity<SubjectDTO> createSubject(@RequestBody SubjectInputDTO subjectDTO) {
+        SubjectDTO created = subjectService.createSubject(subjectDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @PutMapping
-    public ResponseEntity<SubjectDTO> updateSubject(@RequestBody Subject subject) {
+    public ResponseEntity<SubjectDTO> updateSubject(@RequestParam("subjectId") String subjectId, @RequestBody SubjectInputDTO subjectDTO) {
         try {
-            SubjectDTO updated = subjectService.updateSubject(subject);
+            SubjectDTO updated = subjectService.updateSubject(Long.parseLong(subjectId), subjectDTO);
             return ResponseEntity.ok(updated);
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);

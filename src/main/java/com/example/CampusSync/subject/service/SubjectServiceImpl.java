@@ -11,10 +11,10 @@ import com.example.CampusSync.common.exceptions.ResourceNotFoundException;
 import com.example.CampusSync.department.model.Department;
 import com.example.CampusSync.department.repository.DepartmentRepository;
 import com.example.CampusSync.subject.dto.SubjectDTO;
+import com.example.CampusSync.subject.dto.SubjectDetailsDTO;
+import com.example.CampusSync.subject.dto.SubjectInputDTO;
 import com.example.CampusSync.subject.model.Subject;
 import com.example.CampusSync.subject.repository.SubjectRepository;
-import com.example.CampusSync.teacher.model.Teacher;
-import com.example.CampusSync.teacher.repository.TeacherRepository;
 
 @Service
 @ComponentScan
@@ -25,9 +25,6 @@ public class SubjectServiceImpl implements SubjectService{
 
     @Autowired
     DepartmentRepository departmentRepository;
-
-    @Autowired
-    TeacherRepository teacherRepository;
 
 
     @Override
@@ -45,26 +42,29 @@ public class SubjectServiceImpl implements SubjectService{
     }
 
     @Override
-    public SubjectDTO createSubject(Subject subject) {
+    public SubjectDetailsDTO getSubjectDetails(Long subjectId) {
+        Subject subject = subjectRepository.findById(subjectId).orElseThrow(()->new ResourceNotFoundException("Subject not found with ID: "+subjectId));
+        return new SubjectDetailsDTO(subject);
+    }
+
+    @Override
+    public SubjectDTO createSubject(SubjectInputDTO subjectDTO) {
 
         // Validate department
-        if (subject.getDepartment() == null || subject.getDepartment().getId() == null) {
+        if (subjectDTO.getDepartmentId() == null) {
             throw new IllegalArgumentException("Department ID cannot be null");
         }
-        Department department = departmentRepository.findById(subject.getDepartment().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Department not found with ID: " + subject.getDepartment().getId()));
+        Department department = departmentRepository.findById(subjectDTO.getDepartmentId())
+                .orElseThrow(() -> new ResourceNotFoundException("Department not found with ID: " + subjectDTO.getDepartmentId()));
+
+        Subject subject = new Subject();
+        subject.setName(subjectDTO.getName());
+        subject.setCode(subjectDTO.getCode());
+        subject.setCredits(subjectDTO.getCredits());
         subject.setDepartment(department);
 
-        // Validate teacher
-        if (subject.getTeacher() == null || subject.getTeacher().getId() == null) {
-            throw new IllegalArgumentException("Teacher ID cannot be null");
-        }
-        Teacher teacher = teacherRepository.findById(subject.getTeacher().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Teacher not found with ID: " + subject.getTeacher().getId()));
-        subject.setTeacher(teacher);
-
         // Set created_at
-        subject.setCreatedAt(LocalDateTime.now());
+        subject.setCreatedAt(java.sql.Timestamp.valueOf(LocalDateTime.now()));
 
         // Save subject
         Subject savedSubject = subjectRepository.save(subject);
@@ -72,31 +72,29 @@ public class SubjectServiceImpl implements SubjectService{
     }
 
     @Override
-    public SubjectDTO updateSubject(Subject subject) {
+    public SubjectDTO updateSubject(Long subjectId, SubjectInputDTO subjectDTO) {
 
-        Long subjectId = subject.getId();
-        if (!subjectRepository.existsById(subjectId)) {
-            throw new ResourceNotFoundException("Subject not found with ID: " + subjectId);
+        if (subjectId == null) {
+            throw new IllegalArgumentException("Subject ID cannot be null for update");
         }
+        
+        Subject existingSubject = subjectRepository.findById(subjectId)
+                .orElseThrow(() -> new ResourceNotFoundException("Subject not found with ID: " + subjectId));
 
         // Validate department
-        if (subject.getDepartment() == null || subject.getDepartment().getId() == null) {
+        if (subjectDTO.getDepartmentId() == null) {
             throw new IllegalArgumentException("Department ID cannot be null");
         }
-        Department department = departmentRepository.findById(subject.getDepartment().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Department not found with ID: " + subject.getDepartment().getId()));
-        subject.setDepartment(department);
+        Department department = departmentRepository.findById(subjectDTO.getDepartmentId())
+                .orElseThrow(() -> new ResourceNotFoundException("Department not found with ID: " + subjectDTO.getDepartmentId()));
+        existingSubject.setDepartment(department);
 
-        // Validate teacher
-        if (subject.getTeacher() == null || subject.getTeacher().getId() == null) {
-            throw new IllegalArgumentException("Teacher ID cannot be null");
-        }
-        Teacher teacher = teacherRepository.findById(subject.getTeacher().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Teacher not found with ID: " + subject.getTeacher().getId()));
-        subject.setTeacher(teacher);
+        existingSubject.setName(subjectDTO.getName());
+        existingSubject.setCode(subjectDTO.getCode());
+        existingSubject.setCredits(subjectDTO.getCredits());
 
         // Save updated subject
-        Subject updatedSubject = subjectRepository.saveAndFlush(subject);
+        Subject updatedSubject = subjectRepository.saveAndFlush(existingSubject);
         return new SubjectDTO(updatedSubject);
     }
 

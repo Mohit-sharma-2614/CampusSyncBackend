@@ -10,14 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.CampusSync.attendance_token.dto.AttendanceTokenDTO;
+import com.example.CampusSync.attendance_token.dto.AttendanceTokenDetailsDTO;
 import com.example.CampusSync.attendance_token.dto.AttendanceTokenInputDTO;
 import com.example.CampusSync.attendance_token.model.AttendanceToken;
 import com.example.CampusSync.attendance_token.repository.AttendanceTokenRepository;
 import com.example.CampusSync.common.exceptions.ResourceNotFoundException;
-import com.example.CampusSync.subject.model.Subject;
-import com.example.CampusSync.subject.repository.SubjectRepository;
-import com.example.CampusSync.teacher.model.Teacher;
-import com.example.CampusSync.teacher.repository.TeacherRepository;
+import com.example.CampusSync.lecturesessions.model.LectureSessions;
+import com.example.CampusSync.lecturesessions.repository.LectureSessionsRepository;
 
 @Service
 public class AttendanceTokenServiceImpl implements AttendanceTokenService {
@@ -26,10 +25,7 @@ public class AttendanceTokenServiceImpl implements AttendanceTokenService {
     private AttendanceTokenRepository attendanceTokenRepository;
 
     @Autowired
-    private SubjectRepository subjectRepository;
-
-    @Autowired
-    private TeacherRepository teacherRepository;
+    private LectureSessionsRepository lectureSessionsRepository;
 
     private static final int TOKEN_VALIDITY_MINUTES = 1; // Token valid for 10 minutes
 
@@ -49,23 +45,25 @@ public class AttendanceTokenServiceImpl implements AttendanceTokenService {
     }
 
     @Override
+    public AttendanceTokenDetailsDTO getTokenDetails(UUID tokenId) {
+        AttendanceToken a = attendanceTokenRepository.findById(tokenId)
+                .orElseThrow(() -> new ResourceNotFoundException("Token not found with ID: " + tokenId));
+        return new AttendanceTokenDetailsDTO(a);
+    }
+
+    @Override
     public AttendanceTokenDTO createToken(AttendanceTokenInputDTO attendanceToken) {
         Timestamp now = Timestamp.from(Instant.now());
         Timestamp expiry = Timestamp.from(now.toInstant().plus(Duration.ofMinutes(TOKEN_VALIDITY_MINUTES)));
-        if (attendanceToken.getSubjectId() == null) {
-            throw new IllegalArgumentException("Subject ID cannot be null");
+        if (attendanceToken.getLectureSessionId() == null) {
+            throw new IllegalArgumentException("Lecture Session ID cannot be null");
         }
-        Subject subject = subjectRepository.findById(attendanceToken.getSubjectId())
-                .orElseThrow(() -> new ResourceNotFoundException("Subject not found with ID: " + attendanceToken.getSubjectId()));
+        LectureSessions session = lectureSessionsRepository.findById(attendanceToken.getLectureSessionId())
+                .orElseThrow(() -> new ResourceNotFoundException("Lecture Session not found with ID: " + attendanceToken.getLectureSessionId()));
 
-
-        Teacher teacher = subject.getTeacher();
-        if(teacher.getId() == null) {
-            throw new IllegalArgumentException("Teacher ID cannot be null");
-        }
         AttendanceToken newAttendanceToken = new AttendanceToken();
-        newAttendanceToken.setSubject(subject);
-        newAttendanceToken.setTeacher(teacher);
+        newAttendanceToken.setLectureSessions(session);
+        newAttendanceToken.setIsActive(true);
         newAttendanceToken.setGeneratedAt(now);
         newAttendanceToken.setExpiresAt(expiry);
 

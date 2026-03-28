@@ -1,7 +1,5 @@
 package com.example.CampusSync.attendance.repository;
 
-
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,15 +14,12 @@ import com.example.CampusSync.attendance.model.Attendance;
 @Repository
 @ComponentScan
 public interface AttendanceRepository extends JpaRepository<Attendance,Long> {
-    @Query("SELECT a FROM Attendance a WHERE a.subject.id = :subjectId")
-    List<Attendance> findBySubjectId(@Param("subjectId") Long subjectId);
+    @Query("SELECT a FROM Attendance a WHERE a.lectureSessions.id = :lectureSessionId")
+    List<Attendance> findByLectureSessionId(@Param("lectureSessionId") Long lectureSessionId);
 
-    @Query("SELECT a FROM Attendance a WHERE a.student.id = :studentId")
-    List<Attendance> findByStudentId(@Param("studentId") Long studentId);
+    @Query("SELECT a FROM Attendance a WHERE a.enrollment.id = :enrollmentId")
+    List<Attendance> findByEnrollmentId(@Param("enrollmentId") Long enrollmentId);
 
-    @Query("SELECT a FROM Attendance a WHERE a.subject.id = :subjectId AND a.student.id = :studentId")
-    List<Attendance> findBySubjectIdAndStudentId(@Param("subjectId") Long subjectId, @Param("studentId") Long studentId);
-
-    @Query("SELECT a FROM Attendance a WHERE a.subject.id = :subjectId AND a.date = :date")
-    Optional<List<Attendance>> findBySubjectIdAndDate(@Param("subjectId") Long subjectId, @Param("date") LocalDate date);
+    @Query("SELECT a FROM Attendance a WHERE a.lectureSessions.id = :lectureSessionId AND a.enrollment.id = :enrollmentId")
+    List<Attendance> findByLectureSessionIdAndEnrollmentId(@Param("lectureSessionId") Long lectureSessionId, @Param("enrollmentId") Long enrollmentId);
 }
