@@ -45,6 +45,8 @@ public class SecurityConfig {
                                 "/teacher/login",
                                 "/teacher/register",
                                 "/api/auth/validate-token",
+                                "/api/auth/refreshtoken",
+                                "/api/auth/logout",
                                 "/ws-connect/**"
                         ).permitAll()
                         .anyRequest().authenticated())

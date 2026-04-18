@@ -95,4 +95,24 @@ public class CourseOfferingsServiceImpl implements CourseOfferingsService {
         if (!repository.existsById(id)) throw new ResourceNotFoundException("Course Offering not found");
         repository.deleteById(id);
     }
+
+    @Override
+    public List<CourseOfferingsDTO> courseOfferingsByTeacherId(Long teacherId) {
+        if (!teacherRepository.existsById(teacherId)) {
+            throw new ResourceNotFoundException("Teacher not found");
+        }
+        return repository.findByTeacherId(teacherId).stream().map(CourseOfferingsDTO::new).toList();
+    }
+
+    @Override
+    public List<CourseOfferingsDTO> getCourseOfferingsBySubjectTeacherAndSemester(Long subjectId, Long teacherId, Integer semester) {
+        return repository.findBySubjectIdAndTeacherIdAndSemester(subjectId, teacherId, semester)
+                .stream().map(CourseOfferingsDTO::new).toList();
+    }
+
+    @Override
+    public List<CourseOfferingsDTO> getCourseOfferingsBySubjectAndTeacher(Long subjectId, Long teacherId) {
+        return repository.findBySubjectIdAndTeacherId(subjectId, teacherId)
+                .stream().map(CourseOfferingsDTO::new).toList();
+    }
 }

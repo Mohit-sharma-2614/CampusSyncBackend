@@ -13,4 +13,7 @@ public interface CourseOfferingsService {
     CourseOfferingsDTO createCourseOffering(CourseOfferingsInputDTO inputDTO);
     CourseOfferingsDTO updateCourseOffering(Long id, CourseOfferingsInputDTO inputDTO);
     void deleteCourseOffering(Long id);
+    List<CourseOfferingsDTO> courseOfferingsByTeacherId(Long teacherId);
+    List<CourseOfferingsDTO> getCourseOfferingsBySubjectTeacherAndSemester(Long subjectId, Long teacherId, Integer semester);
+    List<CourseOfferingsDTO> getCourseOfferingsBySubjectAndTeacher(Long subjectId, Long teacherId);
 }

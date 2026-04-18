@@ -48,8 +48,10 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     public List<AttendanceDTO> getAttendanceByLectureSessionId(Long lectureSessionId) {
-        // LectureSessions session = lectureSessionsRepository.findById(lectureSessionId)
-        //         .orElseThrow(() -> new ResourceNotFoundException("Lecture Session not found with ID: " + lectureSessionId));
+        // LectureSessions session =
+        // lectureSessionsRepository.findById(lectureSessionId)
+        // .orElseThrow(() -> new ResourceNotFoundException("Lecture Session not found
+        // with ID: " + lectureSessionId));
 
         List<Attendance> attendances = attendanceRepository.findByLectureSessionId(lectureSessionId);
         return attendances.stream().map(AttendanceDTO::new).toList();
@@ -58,7 +60,8 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Override
     public List<AttendanceDTO> getAttendanceByEnrollmentId(Long enrollmentId) {
         // Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
-        //         .orElseThrow(() -> new ResourceNotFoundException("Enrollment not found with ID: " + enrollmentId));
+        // .orElseThrow(() -> new ResourceNotFoundException("Enrollment not found with
+        // ID: " + enrollmentId));
 
         List<Attendance> attendances = attendanceRepository.findByEnrollmentId(enrollmentId);
         return attendances.stream().map(AttendanceDTO::new).toList();
@@ -67,12 +70,26 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Override
     public List<AttendanceDTO> getAttendanceByLectureSessionAndEnrollmentId(Long lectureSessionId, Long enrollmentId) {
         lectureSessionsRepository.findById(lectureSessionId)
-                .orElseThrow(() -> new ResourceNotFoundException("Lecture Session not found with ID: " + lectureSessionId));
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Lecture Session not found with ID: " + lectureSessionId));
 
         enrollmentRepository.findById(enrollmentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Enrollment not found with ID: " + enrollmentId));
 
-        List<Attendance> attendances = attendanceRepository.findByLectureSessionIdAndEnrollmentId(lectureSessionId, enrollmentId);
+        List<Attendance> attendances = attendanceRepository.findByLectureSessionIdAndEnrollmentId(lectureSessionId,
+                enrollmentId);
+        return attendances.stream().map(AttendanceDTO::new).toList();
+    }
+
+    @Override
+    public List<AttendanceDTO> getAttendanceByStudentAndSubject(Long studentId, Long subjectId) {
+        List<Attendance> attendances = attendanceRepository.findByStudentIdAndSubjectId(studentId, subjectId);
+        return attendances.stream().map(AttendanceDTO::new).toList();
+    }
+
+    @Override
+    public List<AttendanceDTO> getAttendanceBySubjectId(Long subjectId) {
+        List<Attendance> attendances = attendanceRepository.findBySubjectId(subjectId);
         return attendances.stream().map(AttendanceDTO::new).toList();
     }
 
@@ -97,19 +114,22 @@ public class AttendanceServiceImpl implements AttendanceService {
             throw new IllegalArgumentException("Enrollment ID cannot be null");
         }
         Enrollment enrollment = enrollmentRepository.findById(attendanceDTO.getEnrollmentId())
-                .orElseThrow(() -> new ResourceNotFoundException("Enrollment not found with ID: " + attendanceDTO.getEnrollmentId()));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Enrollment not found with ID: " + attendanceDTO.getEnrollmentId()));
 
         if (attendanceDTO.getLectureSessionId() == null) {
             throw new IllegalArgumentException("Lecture Session ID cannot be null");
         }
         LectureSessions session = lectureSessionsRepository.findById(attendanceDTO.getLectureSessionId())
-                .orElseThrow(() -> new ResourceNotFoundException("Lecture Session not found with ID: " + attendanceDTO.getLectureSessionId()));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Lecture Session not found with ID: " + attendanceDTO.getLectureSessionId()));
 
         if (attendanceDTO.getTokenId() == null) {
             throw new IllegalArgumentException("Token ID cannot be null");
         }
         AttendanceToken token = attendanceTokenRepository.findById(attendanceDTO.getTokenId())
-                .orElseThrow(() -> new ResourceNotFoundException("Token not found with ID: " + attendanceDTO.getTokenId()));
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Token not found with ID: " + attendanceDTO.getTokenId()));
 
         Attendance attendance = new Attendance();
         attendance.setEnrollment(enrollment);
@@ -130,10 +150,12 @@ public class AttendanceServiceImpl implements AttendanceService {
 
         List<Attendance> attendances = attendanceInputs.stream().map(input -> {
             Enrollment enrollment = enrollmentRepository.findById(input.getEnrollmentId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Enrollment not found with id: " + input.getEnrollmentId()));
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Enrollment not found with id: " + input.getEnrollmentId()));
 
             LectureSessions session = lectureSessionsRepository.findById(input.getLectureSessionId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Lecture Session not found with id: " + input.getLectureSessionId()));
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Lecture Session not found with id: " + input.getLectureSessionId()));
 
             AttendanceToken token = attendanceTokenRepository.findById(input.getTokenId())
                     .orElseThrow(() -> new ResourceNotFoundException("Token not found with id: " + input.getTokenId()));
@@ -171,19 +193,22 @@ public class AttendanceServiceImpl implements AttendanceService {
             throw new IllegalArgumentException("Enrollment ID cannot be null");
         }
         Enrollment enrollment = enrollmentRepository.findById(attendanceDTO.getEnrollmentId())
-                .orElseThrow(() -> new ResourceNotFoundException("Enrollment not found with ID: " + attendanceDTO.getEnrollmentId()));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Enrollment not found with ID: " + attendanceDTO.getEnrollmentId()));
 
         if (attendanceDTO.getLectureSessionId() == null) {
             throw new IllegalArgumentException("Lecture Session ID cannot be null");
         }
         LectureSessions session = lectureSessionsRepository.findById(attendanceDTO.getLectureSessionId())
-                .orElseThrow(() -> new ResourceNotFoundException("Lecture Session not found with ID: " + attendanceDTO.getLectureSessionId()));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Lecture Session not found with ID: " + attendanceDTO.getLectureSessionId()));
 
         if (attendanceDTO.getTokenId() == null) {
             throw new IllegalArgumentException("Token ID cannot be null");
         }
         AttendanceToken token = attendanceTokenRepository.findById(attendanceDTO.getTokenId())
-                .orElseThrow(() -> new ResourceNotFoundException("Token not found with ID: " + attendanceDTO.getTokenId()));
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Token not found with ID: " + attendanceDTO.getTokenId()));
 
         existingAttendance.setEnrollment(enrollment);
         existingAttendance.setLectureSessions(session);
@@ -196,7 +221,7 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     @Override
     public void deleteAttendance(Long attendanceId) {
-        if(!attendanceRepository.existsById(attendanceId)){
+        if (!attendanceRepository.existsById(attendanceId)) {
             throw new ResourceNotFoundException("Attendance not found with ID: " + attendanceId);
         }
 

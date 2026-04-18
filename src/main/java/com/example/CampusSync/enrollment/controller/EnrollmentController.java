@@ -21,6 +21,7 @@ import com.example.CampusSync.enrollment.dto.EnrollmentDTO;
 import com.example.CampusSync.enrollment.dto.EnrollmentDetailsDTO;
 import com.example.CampusSync.enrollment.dto.EnrollmentInputDTO;
 import com.example.CampusSync.enrollment.service.EnrollmentServiceImpl;
+import com.example.CampusSync.common.exceptions.ResourceNotFoundException;
 
 @RestController
 @RequestMapping("/enrollment")
@@ -65,6 +66,17 @@ public class EnrollmentController {
             List<EnrollmentDTO> enrollments = enrollmentService.findByStudentIdAndCourseOfferingId(studentId, courseOfferingId);
             return ResponseEntity.ok(enrollments);
         } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    @GetMapping("/subject")
+    public ResponseEntity<List<EnrollmentDTO>> getEnrollmentsBySubjectId(
+            @RequestParam("subjectId") Long subjectId) {
+        try {
+            List<EnrollmentDTO> enrollments = enrollmentService.findBySubjectId(subjectId);
+            return ResponseEntity.ok(enrollments);
+        } catch (NoSuchElementException | ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }

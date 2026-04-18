@@ -13,4 +13,5 @@ public interface LectureSessionsService {
     LectureSessionsDTO createLectureSession(LectureSessionsInputDTO inputDTO);
     LectureSessionsDTO updateLectureSession(Long id, LectureSessionsInputDTO inputDTO);
     void deleteLectureSession(Long id);
+    List<LectureSessionsDTO> getLectureSessionsByCourseOfferingId(Long courseOfferingId);
 }

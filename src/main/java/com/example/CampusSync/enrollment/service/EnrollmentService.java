@@ -11,6 +11,7 @@ public interface EnrollmentService{
     List<EnrollmentDTO> findByStudentId(Long studentId);
     List<EnrollmentDTO> findByCourseOfferingId(Long courseOfferingId);
     List<EnrollmentDTO> findByStudentIdAndCourseOfferingId(Long studentId,Long courseOfferingId);
+    List<EnrollmentDTO> findBySubjectId(Long subjectId);
     EnrollmentDTO getEnrollment(Long enrollmentId);
     EnrollmentDetailsDTO getEnrollmentDetails(Long enrollmentId);
     EnrollmentDTO createEnrollment(EnrollmentInputDTO enrollment);

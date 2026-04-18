@@ -64,6 +64,15 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    public List<StudentResponseDTO> getStudentsBySubjectId(Long subjectId) {
+        List<Student> students = studentRepository.findBySubjectId(subjectId)
+                .orElseThrow(() -> new ResourceNotFoundException("Students not found for subjectId: " + subjectId));
+        return students.stream()
+                .map(StudentResponseDTO::new)
+                .toList();
+    }
+
+    @Override
     @Transactional
     public StudentResponseDTO createStudent(StudentRequestDTO studentDto) {
         // Check if user already exists

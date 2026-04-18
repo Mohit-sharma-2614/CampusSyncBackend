@@ -67,6 +67,15 @@ public class EnrollmentServiceImpl implements EnrollmentService{
     }
 
     @Override
+    public List<EnrollmentDTO> findBySubjectId(Long subjectId) {
+        List<Enrollment> enrollments = enrollmentRepository.findBySubjectId(subjectId)
+                .orElseThrow(() -> new ResourceNotFoundException("Enrollment not found for subjectId: " + subjectId));
+        return enrollments.stream()
+                .map(EnrollmentDTO::new)
+                .toList();
+    }
+
+    @Override
     public EnrollmentDTO getEnrollment(Long enrollmentId) {
         Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
                 .orElseThrow(()-> new ResourceNotFoundException("Enrollment not found with ID: "+enrollmentId));

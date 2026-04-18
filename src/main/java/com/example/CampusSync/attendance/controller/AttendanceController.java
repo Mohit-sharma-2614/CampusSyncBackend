@@ -35,28 +35,30 @@ public class AttendanceController {
         return ResponseEntity.ok(all);
     }
 
+    // TODO: Change the path variable to parameter
     @GetMapping("/lecture-session/{lectureSessionId}")
     public ResponseEntity<List<AttendanceDTO>> getByLectureSession(@PathVariable Long lectureSessionId) {
-        try{
+        try {
             List<AttendanceDTO> attendance = attendanceService.getAttendanceByLectureSessionId(lectureSessionId);
             return ResponseEntity.ok(attendance);
-        } catch (NoSuchElementException | ResourceNotFoundException e){
+        } catch (NoSuchElementException | ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 
     @GetMapping("/enrollment/{enrollmentId}")
     public ResponseEntity<List<AttendanceDTO>> getByEnrollment(@PathVariable Long enrollmentId) {
-        try{
+        try {
             List<AttendanceDTO> attendance = attendanceService.getAttendanceByEnrollmentId(enrollmentId);
             return ResponseEntity.ok(attendance);
-        } catch (NoSuchElementException | ResourceNotFoundException e){
+        } catch (NoSuchElementException | ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 
     @PostMapping("/bulk")
-    public ResponseEntity<List<AttendanceDTO>> createBulkAttendance(@RequestBody List<AttendanceInputDTO> attendanceInputs) {
+    public ResponseEntity<List<AttendanceDTO>> createBulkAttendance(
+            @RequestBody List<AttendanceInputDTO> attendanceInputs) {
         try {
             List<AttendanceDTO> createdAttendances = attendanceService.createBulkAttendance(attendanceInputs);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdAttendances);
@@ -71,12 +73,28 @@ public class AttendanceController {
     public ResponseEntity<List<AttendanceDTO>> getByLectureSessionAndEnrollment(
             @PathVariable Long lectureSessionId,
             @PathVariable Long enrollmentId) {
-        try{
-            List<AttendanceDTO> attendance = attendanceService.getAttendanceByLectureSessionAndEnrollmentId(lectureSessionId, enrollmentId);
+        try {
+            List<AttendanceDTO> attendance = attendanceService
+                    .getAttendanceByLectureSessionAndEnrollmentId(lectureSessionId, enrollmentId);
             return ResponseEntity.ok(attendance);
-        } catch (NoSuchElementException | ResourceNotFoundException e){
+        } catch (NoSuchElementException | ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
+    }
+
+    @GetMapping("/student-subject")
+    public ResponseEntity<List<AttendanceDTO>> getAttendanceByStudentAndSubject(
+            @RequestParam("studentId") Long studentId,
+            @RequestParam("subjectId") Long subjectId) {
+        List<AttendanceDTO> attendance = attendanceService.getAttendanceByStudentAndSubject(studentId, subjectId);
+        return ResponseEntity.ok(attendance);
+    }
+
+    @GetMapping("/subject")
+    public ResponseEntity<List<AttendanceDTO>> getAttendanceBySubjectId(
+            @RequestParam("subjectId") Long subjectId) {
+        List<AttendanceDTO> attendance = attendanceService.getAttendanceBySubjectId(subjectId);
+        return ResponseEntity.ok(attendance);
     }
 
     @GetMapping

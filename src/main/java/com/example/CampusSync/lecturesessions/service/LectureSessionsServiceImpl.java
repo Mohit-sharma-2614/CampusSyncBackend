@@ -47,6 +47,14 @@ public class LectureSessionsServiceImpl implements LectureSessionsService {
     }
 
     @Override
+    public List<LectureSessionsDTO> getLectureSessionsByCourseOfferingId(Long courseOfferingId) {
+        List<LectureSessions> sessions = lectureSessionsRepository.findByCourseOfferingsId(courseOfferingId);
+        return sessions.stream()
+                .map(LectureSessionsDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public LectureSessionsDTO createLectureSession(LectureSessionsInputDTO inputDTO) {
         if (inputDTO.getCourseOfferingId() == null) {
             throw new IllegalArgumentException("Course Offering ID cannot be null");

@@ -13,4 +13,5 @@ public interface StudentService {
     StudentResponseDTO updateStudent(Long studentId, StudentRequestDTO studentDto);
     void deleteStudent(Long studentId);
     StudentResponseDTO verify(StudentLoginDTO studentLoginDTO);
+    List<StudentResponseDTO> getStudentsBySubjectId(Long subjectId);
 }

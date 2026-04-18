@@ -21,6 +21,7 @@ import com.example.CampusSync.student.dto.StudentResponseDTO;
 import com.example.CampusSync.student.dto.StudentLoginDTO;
 import com.example.CampusSync.student.dto.StudentRequestDTO;
 import com.example.CampusSync.student.service.StudentServiceImpl;
+import com.example.CampusSync.common.exceptions.ResourceNotFoundException;
 
 @RestController
 @RequestMapping("/student")
@@ -34,8 +35,12 @@ public class StudentController {
         try {
             StudentResponseDTO s = studentService.verify(student);
             return ResponseEntity.ok(s);
-        } catch (UsernameNotFoundException | BadCredentialsException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+        } catch (UsernameNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found with email: " + student.getEmail());
+        } catch (BadCredentialsException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found with email: " + student.getEmail());
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("User not found with email: " + student.getEmail());
         }
     }
 
@@ -54,6 +59,16 @@ public class StudentController {
     public ResponseEntity<List<StudentResponseDTO>> getAllStudents() {
         List<StudentResponseDTO> students = studentService.getAllStudents();
         return ResponseEntity.ok(students);
+    }
+
+    @GetMapping("/subject")
+    public ResponseEntity<List<StudentResponseDTO>> getStudentsBySubjectId(@RequestParam("subjectId") Long subjectId) {
+        try {
+            List<StudentResponseDTO> students = studentService.getStudentsBySubjectId(subjectId);
+            return ResponseEntity.ok(students);
+        } catch (NoSuchElementException | ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
     @GetMapping

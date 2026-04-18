@@ -51,4 +51,24 @@ public class CourseOfferingsController {
         service.deleteCourseOffering(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/teacher")
+    public ResponseEntity<List<CourseOfferingsDTO>> courseOfferingsByTeacherId(@RequestParam("teacherId") Long teacherId) {
+        return ResponseEntity.ok(service.courseOfferingsByTeacherId(teacherId));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<CourseOfferingsDTO>> getCourseOfferingsBySubjectTeacherAndSemester(
+            @RequestParam("subjectId") Long subjectId,
+            @RequestParam("teacherId") Long teacherId,
+            @RequestParam("semester") Integer semester) {
+        return ResponseEntity.ok(service.getCourseOfferingsBySubjectTeacherAndSemester(subjectId, teacherId, semester));
+    }
+
+    @GetMapping("/subject-teacher")
+    public ResponseEntity<List<CourseOfferingsDTO>> getCourseOfferingsBySubjectAndTeacher(
+            @RequestParam("subjectId") Long subjectId,
+            @RequestParam("teacherId") Long teacherId) {
+        return ResponseEntity.ok(service.getCourseOfferingsBySubjectAndTeacher(subjectId, teacherId));
+    }
 }

@@ -46,6 +46,13 @@ public class LectureSessionsController {
         }
     }
 
+    @GetMapping("/course-offering")
+    public ResponseEntity<List<LectureSessionsDTO>> getLectureSessionsByCourseOfferingId(
+            @RequestParam("courseOfferingId") Long courseOfferingId) {
+        List<LectureSessionsDTO> sessions = lectureSessionsService.getLectureSessionsByCourseOfferingId(courseOfferingId);
+        return ResponseEntity.ok(sessions);
+    }
+
     @PostMapping
     public ResponseEntity<LectureSessionsDTO> createLectureSession(@RequestBody LectureSessionsInputDTO inputDTO) {
         LectureSessionsDTO created = lectureSessionsService.createLectureSession(inputDTO);
